@@ -8,69 +8,6 @@ R_DEFAULT = 8.314
 class ChemUtil:
 
     @classmethod
-    def parse(cls, inputFile, T, R):
-        try:
-            tree = ET.parse(inputFile)
-        except:
-            raise ValueError("Must be a valid xml file!")
-        root = tree.getroot()
-        species = root.find("phase").find("speciesArray").text.strip().split(" ")
-        # print(species)
-
-        reactionData = root.find("reactionData")
-        reactionList = [] # list of "Reaction"
-        for row in reactionData:
-
-            # reaction formula
-            reactStr = row.find("equation").text
-            # print(reactStr)
-
-            # Parse reaction rate coeff parameters
-            rateCoeffType = None
-            k = None
-            rateCoeffPar = []
-            coeffSection = row.find("rateCoeff")
-            if coeffSection.find("Constant") != None:
-                rateCoeffType = "Constant"
-                rateCoeffPar.append(float(coeffSection.find("Constant").find("k").text))
-                k = cls.k_const(rateCoeffPar[0])
-            elif coeffSection.find("Arrhenius") != None:
-                rateCoeffType = "Arrhenius"
-                rateCoeffPar.append(float(coeffSection.find("Arrhenius").find("A").text))
-                rateCoeffPar.append(float(coeffSection.find("Arrhenius").find("E").text))
-                k = cls.k_arr(rateCoeffPar[0], rateCoeffPar[1], T, R)
-            else:
-                rateCoeffType = "modifiedArrhenius"
-                rateCoeffPar.append(float(coeffSection.find("modifiedArrhenius").find("A").text))
-                rateCoeffPar.append(float(coeffSection.find("modifiedArrhenius").find("b").text))
-                rateCoeffPar.append(float(coeffSection.find("modifiedArrhenius").find("E").text))
-                k = cls.k_mod_arr(rateCoeffPar[0], rateCoeffPar[1], rateCoeffPar[2], T, R)
-
-            # Put coeffs of reactants, products
-            reactCoeff = np.zeros(len(species))
-            productCoeff = np.zeros(len(species))
-            # Split the "_:_" pairs and get the coeff for corresponding species
-            for mp in row.find("reactants").text.strip().split(" "):
-                sp, co = mp.split(":")
-                reactCoeff[species.index(sp)] = float(co)
-            for mp in row.find("products").text.strip().split(" "):
-                sp, co = mp.split(":")
-                productCoeff[species.index(sp)] = float(co)
-
-            # save the metadata (reversible, type, id ...)
-            reactMeta = row.attrib
-            reactMeta["T"] = T
-            reactMeta["R"] = R
-            # Create the Reaction object, and add to the list
-
-            reaction = Reaction(reactStr, k, rateCoeffType, rateCoeffPar,
-                                reactCoeff, productCoeff, reactMeta)
-            reactionList.append(reaction)
-            # print(reactStr, k, rateCoeffType, rateCoeffPar, reactCoeff, productCoeff, reactMeta)
-
-        return reactionList
-
-    @classmethod
     def k_const(cls, k=1.0):
         """Simply returns a constant reaction rate coefficient
 
@@ -245,57 +182,107 @@ class ChemUtil:
         rj = cls.progress_rate(nu_react, k, concs)
         return np.dot(nu, rj)
 
+    @classmethod
+    def parse(cls, inputFile, T, R):
+        try:
+            tree = ET.parse(inputFile)
+        except:
+            raise ValueError("Must be a valid xml file!")
+        root = tree.getroot()
+        species = root.find("phase").find("speciesArray").text.strip().split(" ")
+        # print(species)
+
+        reactionData = root.find("reactionData")
+        reactionList = [] # list of "Reaction"
+        for row in reactionData:
+
+            # reaction formula
+            reactStr = row.find("equation").text
+
+            # metadata for rate coeff and reaction
+            rateCoeffMeta = dict()
+            rateCoeffMeta["T"] = T
+            rateCoeffMeta["R"] = R
+            reactMeta = row.attrib # reversible/irreversible, type, id ...
+
+            # Parse reaction rate coeff parameters and save to rateCoeffMeta
+            coeffSection = row.find("rateCoeff")
+            k = None
+            if coeffSection.find("Constant") != None:
+                rateCoeffMeta["type"] = "Constant"
+                k = cls.k_const(float(coeffSection.find("Constant").find("k").text))
+            elif coeffSection.find("Arrhenius") != None:
+                rateCoeffMeta["type"] = "Arrhenius"
+                rateCoeffMeta["A"] = float(coeffSection.find("Arrhenius").find("A").text)
+                rateCoeffMeta["E"] = float(coeffSection.find("Arrhenius").find("E").text)
+                k = cls.k_arr(rateCoeffMeta["A"], rateCoeffMeta["E"], T, R)
+            else:
+                rateCoeffMeta["type"] = "modifiedArrhenius"
+                rateCoeffMeta["A"] = float(coeffSection.find("modifiedArrhenius").find("A").text)
+                rateCoeffMeta["b"] = float(coeffSection.find("modifiedArrhenius").find("b").text)
+                rateCoeffMeta["E"] = float(coeffSection.find("modifiedArrhenius").find("E").text)
+                k = cls.k_mod_arr(rateCoeffMeta["A"], rateCoeffMeta["b"], rateCoeffMeta["E"], T, R)
+
+            # Coeffs of reactants, products
+            # Split the "_:_" pairs and get the coeff for corresponding species
+            reactCoeff = np.zeros(len(species))
+            productCoeff = np.zeros(len(species))
+            for mp in row.find("reactants").text.strip().split(" "):
+                sp, co = mp.split(":")
+                reactCoeff[species.index(sp)] = float(co)
+            for mp in row.find("products").text.strip().split(" "):
+                sp, co = mp.split(":")
+                productCoeff[species.index(sp)] = float(co)
+
+            # Create the Reaction object, and add to the list
+            reaction = Reaction(reactStr, k, reactCoeff, productCoeff,
+                                rateCoeffMeta, reactMeta)
+            reactionList.append(reaction)
+
+        return reactionList
+
 
 class Reaction:
 
     def __init__(self, reactStr,
-                 k, rateCoeffType, rateCoeffPar,
-                 reactCoeff, productCoeff,
-                 reactMeta):
+                 k, reactCoeff, productCoeff,
+                 rateCoeffMeta, reactMeta):
         self.reactStr = reactStr
         self.k = k
-        self.rateCoeffType = rateCoeffType
-        self.rateCoeffPar = rateCoeffPar
         self.reactCoeff = reactCoeff
         self.productCoeff = productCoeff
+        self.rateCoeffMeta = rateCoeffMeta
         self.reactMeta = reactMeta
-        # self.setRateCoeff()
 
-    # def setMeta(self, **args): # used to set T, R, reversible, elementary, id
-    #     for par in args:
-    #         self.reactMeta[par] = args[par]
-    #
-    # def setRateCoeff(self): # set the rate coeff
-    #     k = None
-    #     T = self.reactMeta["T"]
-    #     R = self.reactMeta["R"]
-    #     par = self.rateCoeffPar
-    #     if self.rateCoeffType == "Constant":
-    #         k = self.k_const(par[0])
-    #     elif self.rateCoeffType == "Arrhenius":
-    #         k = self.k_arr(par[0], par[1], T, R)
-    #     elif self.rateCoeffType == "modifiedArrhenius":
-    #         k = self.k_arr(par[0], par[1], par[2], T, R)
-    #     # others would cause errors during parsing
-    #
-    #     self.k = k
+    # Future use, possible parameters: T=..., R=..., type=..., A=..., b=..., E...
+    def updateCoeff(**args):
+        for par in args:
+            rateCoeffMeta[par] = args[par]
+        # self.k = ChemUtil.newMethodToComputeK(...)
+        return
 
+    # Future use, possible parameters: reversible=True, type="duplicate reactions"
+    # or "three-body reactions"
+    def updateReaction(**args):
+        for par in args:
+            reactMeta[par] = args[par]
+        # do something
+        return
 
     def __str__(self):
-        return self.reactStr
-
-
+        return self.reactStr + "\n" + \
+               "\t" + "rate coeff metadata: " + str(self.rateCoeffMeta) + "\n" + \
+               "\t" + "reaction metadata: " + str(self.reactMeta)
 
 
 class ReactionSystem:
-    def __init__(self, inputFile, T, R, concs):
-        self.inputFile = inputFile
+    def __init__(self, T, R, concs):
         self.T = T
         self.R = R
         self.concs = concs
 
-    def build(self):
-        self.reactionList = ChemUtil.parse(self.inputFile, self.T, self.R)
+    def buildFromList(self, reactionList):
+        self.reactionList = reactionList
         self.nu_react = np.array([r.reactCoeff for r in self.reactionList]).T
         self.nu_prod = np.array([r.productCoeff for r in self.reactionList]).T
         self.k = np.array([r.k for r in self.reactionList])
@@ -303,12 +290,32 @@ class ReactionSystem:
         self.progress_rate = ChemUtil.progress_rate(self.nu_react, self.k, self.concs)
         self.reaction_rate = ChemUtil.reaction_rate(self.nu_react, self.nu_prod, self.k, self.concs)
 
+    def buildFromXml(self, inputFile):
+        self.reactionList = ChemUtil.parse(inputFile, self.T, self.R)
+        self.buildFromList(self.reactionList)
+
+    def getProgressRate(self):
+        return self.progress_rate
+
+    def getReactionRate(self):
+        return self.reaction_rate
+
+    def __str__(self):
+        res = "\n"
+        res += "The system:"
+        for r in self.reactionList:
+            res += "\n" + str(r)
+        return res + "\n"
+
+    def __len__(self):
+        return len(self.reactionList)
 
 
 if __name__ == '__main__':
     concs = np.array([2.0, 1.0, 0.5, 1.0, 1.0])
-    rsystem = ReactionSystem("test1.xml", T_DEFAULT, R_DEFAULT, concs)
-    rsystem.build()
+    rsystem = ReactionSystem(T_DEFAULT, R_DEFAULT, concs)
+    rsystem.buildFromXml("test1.xml")
 
-    print(rsystem.progress_rate)
-    print(rsystem.reaction_rate)
+    print(rsystem.getProgressRate())
+    print(rsystem.getReactionRate())
+    print(rsystem)
