@@ -57,4 +57,5 @@ def test_k_mod_arr_R_neg():
 
 #test progress_rate
 def test_progress_rate():
-    assert chemkin.ChemUtil.progress_rate(np.array([[2.0, 1.0], [1.0, 0.0], [0.0, 1.0]]), np.array([2.0, 1.0, 1.0]), 10.0) == array([ 40.,  20.])
+    assert(np.all(chemkin.ChemUtil.progress_rate(np.array([[2.0, 1.0], [1.0, 0.0], [0.0, 1.0]]), np.array([10.0, 10.0]), np.array([2.0, 1.0, 1.0])) == [40., 20.]))
+    

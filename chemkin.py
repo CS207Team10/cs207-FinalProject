@@ -134,7 +134,7 @@ class ChemUtil:
 
         EXAMPLES:
         =========
-        >>> ChemUtil.progress_rate(np.array([[2.0, 1.0], [1.0, 0.0], [0.0, 1.0]]), np.array([2.0, 1.0, 1.0]), 10.0)
+        >>> ChemUtil.progress_rate(np.array([[2.0, 1.0], [1.0, 0.0], [0.0, 1.0]]), np.array([10.0, 10.0]), np.array([2.0, 1.0, 1.0]))
         array([ 40.,  20.])
         """
         progress = k.copy() # Initialize progress rates with reaction rate coefficients
