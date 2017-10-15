@@ -23,7 +23,7 @@ class ChemUtil:
 
         EXAMPLES:
         =========
-        >>> k_const(5.0)
+        >>> ChemUtil.k_const(5.0)
         5.0
         """
         if k < 0:
@@ -56,7 +56,7 @@ class ChemUtil:
 
         EXAMPLES:
         =========
-        >>> k_arr(2.0, 3.0, 100.0)
+        >>> ChemUtil.k_arr(2.0, 3.0, 100.0)
         1.9927962618542914
         """
 
@@ -98,7 +98,7 @@ class ChemUtil:
 
         EXAMPLES:
         =========
-        >>> k_mod_arr(2.0, -0.5, 3.0, 100.0)
+        >>> ChemUtil.k_mod_arr(2.0, -0.5, 3.0, 100.0)
         0.19927962618542916
         """
         if A < 0.0:
@@ -134,7 +134,7 @@ class ChemUtil:
 
         EXAMPLES:
         =========
-        >>> progress_rate(np.array([[2.0, 1.0], [1.0, 0.0], [0.0, 1.0]]), np.array([2.0, 1.0, 1.0]), 10.0)
+        >>> ChemUtil.progress_rate(np.array([[2.0, 1.0], [1.0, 0.0], [0.0, 1.0]]), np.array([2.0, 1.0, 1.0]), 10.0)
         array([ 40.,  20.])
         """
         progress = k.copy() # Initialize progress rates with reaction rate coefficients
