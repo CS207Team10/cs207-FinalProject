@@ -255,17 +255,17 @@ class Reaction:
         self.reactMeta = reactMeta
 
     # Future use, possible parameters: T=..., R=..., type=..., A=..., b=..., E...
-    def updateCoeff(**args):
+    def updateCoeff(self, **args):
         for par in args:
-            rateCoeffMeta[par] = args[par]
+            self.rateCoeffMeta[par] = args[par]
         # self.k = ChemUtil.newMethodToComputeK(...)
         return
 
     # Future use, possible parameters: reversible=True, type="duplicate reactions"
     # or "three-body reactions"
-    def updateReaction(**args):
+    def updateReaction(self, **args):
         for par in args:
-            reactMeta[par] = args[par]
+            self.reactMeta[par] = args[par]
         # do something
         return
 
@@ -318,4 +318,8 @@ if __name__ == '__main__':
 
     print(rsystem.getProgressRate())
     print(rsystem.getReactionRate())
+    print(rsystem)
+
+    rsystem.reactionList[0].updateCoeff(T=0)
+    rsystem.reactionList[0].updateReaction(reversible="yes")
     print(rsystem)
