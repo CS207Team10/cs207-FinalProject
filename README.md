@@ -9,17 +9,9 @@ Rubric: [here](https://github.com/IACS-CS-207/cs207-F17/blob/master/project/mile
 ## Introduction:
 (Describe what problem the code is solving. You may borrow the Latex expressions from my lecture notes. Discuss in broad strokes what the purpose of the code is along with any features. Do not describe the details of the code yet.)
 
-This program is a chemical kinetics library, which can be used to calculate reaction rate coefficients, progress rate and reaction rate for a given system of chemical reactions. Our code is able to compute 3 different kinds of reaction rate coefficients: Constant reaction rate coefficients, Arrhenius reaction rate coefficients and Modified Arrhenius reaction rate coefficients. Progress rate and reaction rate of elementary reactions and irreversible reactions can be handle by this program. 
+This program is a chemical kinetics library, which can be used to calculate reaction rate coefficients, progress rate and reaction rate for a given system of chemical reactions. Our code is able to compute 3 different kinds of reaction rate coefficients: Constant reaction rate coefficients, Arrhenius reaction rate coefficients and Modified Arrhenius reaction rate coefficients. Progress rates and reaction rates of elementary reactions and irreversible reactions can also be handle by this program. 
 
-A parse function is also included in our program, which was designed to parse an XML input file provided by users. The function handles all the inputs, read in all the needed data and prepare for further calculation.
-
-Reaction rate coefficient formula:
-
-\begin{foo}
-  &k_{\textrm{const}}   = k \tag{constant} \\
-  &k_{\textrm{arr}}     = A \exp\left(-\frac{E}{RT}\right) \tag{Arrhenius} \\
-  &k_{\textrm{mod arr}} = A T^{b} \exp\left(-\frac{E}{RT}\right) \tag{Modified Arrhenius}
-\end{foo}
+A parse function is also included in our program, which was designed to parse an XML input file provided by users. The function handles the inputs by reading in all the needed data and store them for later calculation.
 
 
 ## Installation:
@@ -27,10 +19,26 @@ Reaction rate coefficient formula:
 
 Our program includes two files: chemkin.py and test_chemkin.py. All the classes and functions necessary to run the library were stored in chemkin.py. All the tests were stored in test_chemkin.py. Both files can be downloaded from our repository. 
 
-To run the program, first make sure you have Python installed on your machine. Then in your terminal, go to the directory where you store the two files. Run `python chemkin.py`. To run tests, run `pytest --cov test_chemkin.py`
+To run the program, first make sure you have Python installed on your machine. Then in your terminal, go to the directory where you store the two files. Run `python chemkin.py`. To run tests, run `pytest --cov test_chemkin.py`.
 
 
 ## Basic Usage and Examples: 
 (Provide a few examples on using your software in some common situations. You may want to show how the code works with a small set of reactions.)
+
+Our program includes three separate classes: `ChemUtil`, `Reaction` and `ReactionSystem`. 
+
+### `ChemUtil`
+
+`ChemUtil` is a class that contains necessary functions to compute all the coefficients and rates. It includes functions: `k_const`, `k_arr`, `k_mod_arr`, `progress_rate`, `reaction_rate` and `parse`.
+
+### `Reaction`:
+
+`Reaction` is a class that can be used to create a Reaction object. It includes functions: `updateCoeff` and `updateReaction`.
+
+### `ReactionSystem`:
+
+`ReactionSystem` is a class that represents a ReactionSystem object. It includes functions: `buildFromList`, `buildFromXml`, `getProgressRate` and `getReactionRate`.
+
+
 
 
