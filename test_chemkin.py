@@ -76,3 +76,8 @@ def test_progress_rate_nu_react_neg():
         chemkin.ChemUtil.progress_rate(np.array([[-2.0, -1.0], [1.0, 0.0], [0.0, 1.0]]), np.array([10.0, 10.0]), np.array([2.0, 1.0, 1.0]))
     except ValueError as err:
         assert(type(err) == ValueError)
+
+# test reaction_rate
+def test_reaction_rate():
+    assert(np.all(chemkin.ChemUtil.reaction_rate(np.array([[2.0, 1.0], [1.0, 0.0], [0.0, 1.0]]), np.array([10.0, 10.0]), np.array([10.0, 10.0]), np.array([2.0, 1.0, 1.0])) ))
+   

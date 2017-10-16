@@ -176,7 +176,8 @@ class ChemUtil:
 
         EXAMPLES:
         =========
-        ...to be added
+        >>> ChemUtil.reaction_rate(np.array([[2.0, 1.0], [1.0, 0.0], [0.0, 1.0]]), np.array([10.0, 10.0]), np.array([10.0, 10.0]), np.array([2.0, 1.0, 1.0])) 
+        array([ 500.,  560.,  580.])
         """
         nu = nu_prod - nu_react
         rj = cls.progress_rate(nu_react, k, concs)
