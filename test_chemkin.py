@@ -59,3 +59,20 @@ def test_k_mod_arr_R_neg():
 def test_progress_rate():
     assert(np.all(chemkin.ChemUtil.progress_rate(np.array([[2.0, 1.0], [1.0, 0.0], [0.0, 1.0]]), np.array([10.0, 10.0]), np.array([2.0, 1.0, 1.0])) == [40., 20.]))
     
+def test_progress_rate_rj_neg():
+    try:
+        chemkin.ChemUtil.progress_rate(np.array([[2.0, 1.0], [1.0, 0.0], [0.0, 1.0]]), np.array([-10.0, -10.0]), np.array([2.0, 1.0, 1.0]))
+    except ValueError as err:
+        assert(type(err) == ValueError)
+        
+def test_progress_rate_concs_neg():
+    try:
+        chemkin.ChemUtil.progress_rate(np.array([[2.0, 1.0], [1.0, 0.0], [0.0, 1.0]]), np.array([10.0, 10.0]), np.array([-2.0, -1.0, -1.0]))
+    except ValueError as err:
+        assert(type(err) == ValueError)
+
+def test_progress_rate_nu_react_neg():
+    try:
+        chemkin.ChemUtil.progress_rate(np.array([[-2.0, -1.0], [1.0, 0.0], [0.0, 1.0]]), np.array([10.0, 10.0]), np.array([2.0, 1.0, 1.0]))
+    except ValueError as err:
+        assert(type(err) == ValueError)
