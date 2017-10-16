@@ -9,13 +9,13 @@ Rubric: [here](https://github.com/IACS-CS-207/cs207-F17/blob/master/project/mile
 ## Introduction:
 (Describe what problem the code is solving. You may borrow the Latex expressions from my lecture notes. Discuss in broad strokes what the purpose of the code is along with any features. Do not describe the details of the code yet.)
 
-This program is a chemical kinetics library, which can be used to calculate reaction rate coefficients, progress rate and reaction rate for a given system of chemical reactions. Our code is able to compute 3 different kinds of reaction rate coefficients: Constant reaction rate coefficients, Arrhenius reaction rate coefficients and Modified Arrhenius reaction rate coefficients. Progress rates and reaction rates of elementary reactions and irreversible reactions can also be handle by this program. 
+This program is a chemical kinetics library, which can be used to calculate reaction rate coefficients, progress rate and reaction rate for a given system of chemical reactions. Our code is able to compute 3 different kinds of reaction rate coefficients: Constant reaction rate coefficients, Arrhenius reaction rate coefficients and Modified Arrhenius reaction rate coefficients. Progress rates and reaction rates of elementary reactions and irreversible reactions can also be handled by this program. 
 
 A parse function is also included in our program, which was designed to parse an XML input file provided by users. The function handles the inputs by reading in all the needed data and store them for later calculation.
 
 
 ## Installation:
-(Describe where the code can be found and downloaded. Tell the user how to run the test suite. We are not releasing this code as a package yet, but when we do that this section will include instructions how how to install the package.)
+(Describe where the code can be found and downloaded. Tell the user how to run the test suite. We are not releasing this code as a package yet, but when we do that this section will include instructions how to install the package.)
 
 Our program includes two files: chemkin.py and test_chemkin.py. All the classes and functions necessary to run the library were stored in chemkin.py. All the tests were stored in test_chemkin.py. Both files can be downloaded from our repository. 
 

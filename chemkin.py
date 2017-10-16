@@ -185,6 +185,26 @@ class ChemUtil:
 
     @classmethod
     def parse(cls, inputFile, T, R):
+        """Returns the reaction rate of a system of irreversible, elementary reactions
+
+        INPUTS:
+        =======
+        inputFile:XML file,
+        T:        float
+                  Temperature
+                  Must be positive
+        R:        float,
+                  Ideal gas constant
+                  Must be positive
+
+        RETURNS:
+        ========
+        to be written
+
+        EXAMPLES:
+        =========
+        to be written
+        """
         try:
             tree = ET.parse(inputFile)
         except:
