@@ -203,7 +203,7 @@ class ChemUtil:
 
         EXAMPLES:
         =========
-        to be written
+        To be written
         """
         try:
             tree = ET.parse(inputFile)

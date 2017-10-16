@@ -81,7 +81,10 @@ def test_progress_rate_nu_react_neg():
 def test_reaction_rate():
     assert(np.all(chemkin.ChemUtil.reaction_rate(np.array([[2.0, 1.0], [1.0, 0.0], [0.0, 1.0]]), np.array([10.0, 10.0]), np.array([10.0, 10.0]), np.array([2.0, 1.0, 1.0])) ))
 
-# test parse
+# test parse (To be checked)
+#def test_parse():
+#    assert(np.all(chemkin.ChemUtil.parse( "./test1.xml", 340, 8.314) ==         [<chemkin.Reaction at 0x10bf70320>, <chemkin.Reaction at 0x10bf701d0>, <chemkin.Reaction at 0x10bf702e8>]))
+   
 def test_parse_Not_XML():
     try:
         chemkin.ChemUtil.parse( "./test1.pdf", 340, 8.314)
