@@ -9,7 +9,12 @@ Rubric: [here](https://github.com/IACS-CS-207/cs207-F17/blob/master/project/mile
 ## Introduction:
 (Describe what problem the code is solving. You may borrow the Latex expressions from my lecture notes. Discuss in broad strokes what the purpose of the code is along with any features. Do not describe the details of the code yet.)
 
-This program is a chemical kinetics library, which can be used to calculate reaction rate coefficients, progress rate and reaction rate for a given system of chemical reactions. Our code is able to compute 3 different kinds of reaction rate coefficients: Constant reaction rate coefficients, Arrhenius reaction rate coefficients and Modified Arrhenius reaction rate coefficients. Progress rates and reaction rates of elementary reactions and irreversible reactions can also be handled by this program. 
+This program is a chemical kinetics library, which can be used to calculate reaction rate coefficients, progress rate and reaction rate for a given system of chemical reactions. Our code is able to compute 3 different kinds of reaction rate coefficients: Constant reaction rate coefficients, Arrhenius reaction rate coefficients and Modified Arrhenius reaction rate coefficients as specified below. 
+
+<a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align}&space;&k_{\textrm{const}}&space;=&space;k&space;\tag{constant}&space;\\&space;&k_{\textrm{arr}}&space;=&space;A&space;\exp\left(-\frac{E}{RT}\right)&space;\tag{Arrhenius}&space;\\&space;&k_{\textrm{mod&space;arr}}&space;=&space;A&space;T^{b}&space;\exp\left(-\frac{E}{RT}\right)&space;\tag{Modified&space;Arrhenius}&space;\end{align}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align}&space;&k_{\textrm{const}}&space;=&space;k&space;\tag{constant}&space;\\&space;&k_{\textrm{arr}}&space;=&space;A&space;\exp\left(-\frac{E}{RT}\right)&space;\tag{Arrhenius}&space;\\&space;&k_{\textrm{mod&space;arr}}&space;=&space;A&space;T^{b}&space;\exp\left(-\frac{E}{RT}\right)&space;\tag{Modified&space;Arrhenius}&space;\end{align}" title="\begin{align} &k_{\textrm{const}} = k \tag{constant} \\ &k_{\textrm{arr}} = A \exp\left(-\frac{E}{RT}\right) \tag{Arrhenius} \\ &k_{\textrm{mod arr}} = A T^{b} \exp\left(-\frac{E}{RT}\right) \tag{Modified Arrhenius} \end{align}" /></a>
+
+Progress rates and reaction rates of elementary reactions and irreversible reactions can also be handled by this program. 
+
 
 A parse function is also included in our program, which was designed to parse an XML input file provided by users. The function handles the inputs by reading in all the needed data and store them for later calculation.
 
