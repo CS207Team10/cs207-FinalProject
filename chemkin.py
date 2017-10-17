@@ -185,7 +185,7 @@ class ChemUtil:
 
     @classmethod
     def parse(cls, inputFile, T, R):
-        """Returns the reaction rate of a system of irreversible, elementary reactions
+        """Parse an XML input file and return list of chemkin.Reaction metadata
 
         INPUTS:
         =======
@@ -199,11 +199,12 @@ class ChemUtil:
 
         RETURNS:
         ========
-        to be written
+        To be written
 
         EXAMPLES:
         =========
-        To be written
+        >>> type( ChemUtil.parse( "./test1.xml", 340, 8.314)[0] )   
+        <class 'chemkin.Reaction'>
         """
         try:
             tree = ET.parse(inputFile)
