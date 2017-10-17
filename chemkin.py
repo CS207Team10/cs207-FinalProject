@@ -199,8 +199,8 @@ class ChemUtil:
 
         RETURNS:
         ========
-        To be written
-
+        reactionList: list of chemkin.Reaction metadata
+                      
         EXAMPLES:
         =========
         >>> type( ChemUtil.parse( "./test1.xml", 340, 8.314)[0] )   
