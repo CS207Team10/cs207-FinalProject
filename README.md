@@ -29,7 +29,7 @@ import chemkin.py
 ```
 To run our test program, 
 ```
-run pytest --cov test_chemkin.py
+pytest --doctest-modules --cov --cov-report term-missing test_chemkin.py
 ```
 
 ## Basic Usage and Examples: 
@@ -61,7 +61,7 @@ concs = np.array([2.0, 1.0, 0.5, 1.0, 1.0])
 rsystem = ck.ReactionSystem(T, R, concs)
 ```
 
-Then, we feed an input `.xml` file (see [here] for the format) to the system by calling `buildFromXml` function:
+Then, we feed an input `.xml` file (see [test1.xml](https://github.com/CS207Team10/cs207-FinalProject/blob/master/test1.xml) or [rxns.xml](https://github.com/CS207Team10/cs207-FinalProject/blob/master/rxns.xml) for the format) to the system by calling `buildFromXml` function:
 
 ```python
 rsystem.buildFromXml("test1.xml")
@@ -129,20 +129,4 @@ H2O + O2 =] HO2 + OH
    Then rebuild the system with the new variables: 
    ```python
    rsystem.buildFromList(rsystem.reactionList)
-   print(rsystem)
-   ```
-   ```
-   The system:
-   2H2 + O2 =] 2OH + H2
-   	rate coeff: 70279405.1912
-   	rate coeff metadata: {'T': 1500, 'R': 8.314, 'type': 'modifiedArrhenius', 'A': 100000000.0, 'b': 0.5, 'E': 50000.0}
-   	reaction metadata: {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction01'}
-   OH + HO2 =] H2O + O2
-   	rate coeff: 10000.0
-   	rate coeff metadata: {'T': 1500, 'R': 8.314, 'type': 'Constant'}
-	reaction metadata: {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction02'}
-   H2O + O2 =] HO2 + OH
-	rate coeff: 70279405.1912
-	rate coeff metadata: {'T': 1500, 'R': 8.314, 'type': 'modifiedArrhenius', 'A': 100000000.0, 'E': 50000.0, 'b': 0.5}
-	reaction metadata: {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction03'}
    ```
