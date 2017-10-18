@@ -304,6 +304,13 @@ class ReactionSystem:
         self.concs = concs
 
     def buildFromList(self, reactionList):
+        """Build ReactionSystem from a reactionList.
+
+        INPUTS:
+        =======
+        reactionList: a reactionList object
+        
+        """
         self.reactionList = reactionList
         self.nu_react = np.array([r.reactCoeff for r in self.reactionList]).T
         self.nu_prod = np.array([r.productCoeff for r in self.reactionList]).T
@@ -313,13 +320,34 @@ class ReactionSystem:
         self.reaction_rate = ChemUtil.reaction_rate(self.nu_react, self.nu_prod, self.k, self.concs)
 
     def buildFromXml(self, inputFile):
+        """Build ReactionSystem from an input file.
+
+        INPUTS:
+        =======
+        inputFile: an XML file
+        
+        """
         self.reactionList = ChemUtil.parse(inputFile, self.T, self.R)
         self.buildFromList(self.reactionList)
 
     def getProgressRate(self):
+        """Return progress rate.
+
+        RETURN:
+        =======
+        progress_rate: progress rate of the reaction system
+        
+        """
         return self.progress_rate
 
     def getReactionRate(self):
+        """Return reaction rate.
+
+        RETURN:
+        =======
+        reaction_rate: reaction rate of the reaction system
+        
+        """
         return self.reaction_rate
 
     def __str__(self):
