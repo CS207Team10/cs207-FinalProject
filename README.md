@@ -36,20 +36,23 @@ run pytest --cov test_chemkin.py
 
 Our program includes three separate classes: `ChemUtil`, `Reaction` and `ReactionSystem`. 
 
-### `ChemUtil`
+### ChemUtil class
 
 `ChemUtil` is an util class that contains all necessary functions to compute the coefficients and rates. It includes functions: `k_const`, `k_arr`, `k_mod_arr`, `progress_rate`, `reaction_rate` and `parse`. 
 
-### `Reaction`:
+### Reaction class
 
 `Reaction` is a class that can be used to create a Reaction object. It includes functions: `updateCoeff` and `updateReaction`.
 
-### `ReactionSystem`:
+### ReactionSystem class
 
 `ReactionSystem` is a class that represents a ReactionSystem object. It includes functions: `buildFromList`, `buildFromXml`, `getProgressRate` and `getReactionRate`.
 
-A sample workflow starts form initializing a `ReactionSystem` object. We need to set up all the needed variables: `T` (temperature), `R` (universal gas constant) and `concs`, which is the concentrations of each species (the order shoulbe be same with one in the input file):
-```
+### Example
+
+A typical workflow starts from initializing a `ReactionSystem` object. We need to set up all the needed variables: `T` (temperature), `R` (universal gas constant) and `concs` (the concentration of each species, and the order should be same with the one in the input file). Here's an example:
+
+```python
 import numpy as np
 import chemkin as ck
 T = 1500
@@ -59,13 +62,65 @@ rsystem = ck.ReactionSystem(T, R, concs)
 ```
 
 Then, we feed an input `.xml` file (see [here] for the format) to the system by calling `buildFromXml` function:
-```
+
+```python
 rsystem.buildFromXml("test1.xml")
 ```
 
 We then can easily retrieve the progress rate and reaction rate by:
-```
+
+```python
 rsystem.getProgressRate()
 rsystem.getReactionRate()
 ```
 
+If we want to get a summary of each reaction and also the whole system, we can do this by:
+
+```python
+print(rsystem)
+
+```
+```
+The system:
+2H2 + O2 =] 2OH + H2
+	rate coeff metadata: {'T': 1500, 'R': 8.314, 'type': 'modifiedArrhenius', 'A': 100000000.0, 'b': 0.5, 'E': 50000.0}
+	reaction metadata: {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction01'}
+OH + HO2 =] H2O + O2
+	rate coeff metadata: {'T': 1500, 'R': 8.314, 'type': 'Constant'}
+	reaction metadata: {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction02'}
+H2O + O2 =] HO2 + OH
+	rate coeff metadata: {'T': 1500, 'R': 8.314, 'type': 'Arrhenius', 'A': 10000000.0, 'E': 10000.0}
+	reaction metadata: {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction03'}
+```
+
+And here's how the system deals with some potential extensions later in this project:
+1. Reversible/Non-elementary reactions
+We store this information in the metadata of each reaction, for example:
+```python
+rsystem.reactionList[0].reactMeta
+```
+```
+{'reversible': 'no', 'type': 'Elementary', 'id': 'reaction01'}
+```
+
+2. Reaction rate coefficients not discussed in class
+We can easily add a new method of computing reaction rate coefficients to our `ChemUtil` class.
+
+3. Other extensions
+We can update the property (metadata) of a single reaction or its reaction rate coefficient (re-compute the coefficient), with any valid parameters. Here's an example of chaning a ``Arrhenius`` type coefficient ``modifiedArrhenius``:
+```python
+print(rsystem.reactionList[2].k, rsystem.reactionList[0].k)
+# using the parameters of the first equation
+rsystem.reactionList[2].updateCoeff(type="modifiedArrhenius", A=100000000.0, b=0.5, E=50000.0) 
+# both ks are same now
+print(rsystem.reactionList[2].k, rsystem.reactionList[0].k) 
+```
+```
+4484938.47318 70279405.1912
+70279405.1912 70279405.1912
+```
+Then rebuild the system using the new variables by 
+```python
+rsystem.buildFromList(rsystem.reactionList)
+print(rsystem)
+```
