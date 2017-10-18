@@ -1,4 +1,4 @@
-# cs207-FinalProject: Chemical Kinetics library
+# cs207 Team 10 Final Project: Chemical Kinetics library
 
 [![Build Status](https://travis-ci.org/CS207Team10/cs207-FinalProject.svg?branch=master)](https://travis-ci.org/CS207Team10/cs207-FinalProject)
 
