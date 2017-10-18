@@ -48,7 +48,7 @@ Our program includes three separate classes: `ChemUtil`, `Reaction` and `Reactio
 
 `ReactionSystem` is a class that represents a ReactionSystem object. It includes functions: `buildFromList`, `buildFromXml`, `getProgressRate` and `getReactionRate`.
 
-### Example
+### Examples
 
 A typical workflow starts from initializing a `ReactionSystem` object. We need to set up all the needed variables: `T` (temperature), `R` (universal gas constant) and `concs` (the concentration of each species, and the order should be same with the one in the input file). Here's an example:
 
@@ -96,10 +96,10 @@ H2O + O2 =] HO2 + OH
 	reaction metadata: {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction03'}
 ```
 
-And here's how the system deals with some potential extensions later in this project:
+### Extensibility
 1. Reversible/Non-elementary reactions
    
-   We store this information in the metadata of each reaction, for example:  
+   We store these types of information in the metadata of each reaction, for example:  
    ```python
    rsystem.reactionList[0].reactMeta
    ```
@@ -109,11 +109,11 @@ And here's how the system deals with some potential extensions later in this pro
 
 2. Reaction rate coefficients not discussed in class
 
-   We can easily add a new method of computing reaction rate coefficients to our `ChemUtil` class.
+   We can easily add a new method of computing reaction rate coefficient to our `ChemUtil` class.
 
 3. Other extensions
 
-   We can update the property (metadata) of a single reaction or its reaction rate coefficient (re-compute the coefficient), with any valid parameters. Here's an example of chaning a ``Arrhenius`` type coefficient ``modifiedArrhenius``:
+   We can update the property (metadata) of a single reaction or its reaction rate coefficient (re-compute the coefficient), with any valid parameters. Here's an example of changing the coefficient of the 3rd reaction to be the same as the 1st reaction:
    ```python
    print(rsystem.reactionList[2].k, rsystem.reactionList[0].k)
    # using the parameters of the first equation
@@ -126,7 +126,7 @@ And here's how the system deals with some potential extensions later in this pro
    70279405.1912 70279405.1912
    ```
 
-   Then rebuild the system using the new variables by 
+   Then rebuild the system with the new variables: 
    ```python
    rsystem.buildFromList(rsystem.reactionList)
    print(rsystem)
