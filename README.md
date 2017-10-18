@@ -20,7 +20,7 @@ A parse function is also included in our program, which was designed to parse an
 
 ## Installation:
 
-All the classes and functions necessary to run the library were stored in chemkin.py. All the tests were stored in test_chemkin.py. Both files can be downloaded from our repository, or you can obtained them here
+All the classes and functions necessary to run the library were stored in chemkin.py. All the tests were stored in test_chemkin.py. Both files can be downloaded from our repository, or you can obtain them here
 [chemkin.py](https://raw.githubusercontent.com/CS207Team10/cs207-FinalProject/master/chemkin.py), [test_chemkin.py](https://raw.githubusercontent.com/CS207Team10/cs207-FinalProject/master/test_chemkin.py).
 
 To use our program as library, move the two files into the same directory as your module, and
@@ -48,6 +48,24 @@ Our program includes three separate classes: `ChemUtil`, `Reaction` and `Reactio
 
 `ReactionSystem` is a class that represents a ReactionSystem object. It includes functions: `buildFromList`, `buildFromXml`, `getProgressRate` and `getReactionRate`.
 
-### Examples:
+A sample workflow starts form initializing a `ReactionSystem` object. We need to set up all the needed variables: `T` (temperature), `R` (universal gas constant) and `concs`, which is the concentrations of each species (the order shoulbe be same with one in the input file):
+```
+import numpy as np
+import chemkin as ck
+T = 1500
+R = 8.314
+concs = np.array([2.0, 1.0, 0.5, 1.0, 1.0])
+rsystem = ck.ReactionSystem(T, R, concs)
+```
 
+Then, we feed an input `.xml` file (see [here] for the format) to the system by calling `buildFromXml` function:
+```
+rsystem.buildFromXml("test1.xml")
+```
+
+We then can easily retrieve the progress rate and reaction rate by:
+```
+rsystem.getProgressRate()
+rsystem.getReactionRate()
+```
 
