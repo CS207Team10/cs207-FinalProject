@@ -238,12 +238,15 @@ class ChemUtil:
                 rateCoeffMeta["A"] = float(coeffSection.find("Arrhenius").find("A").text)
                 rateCoeffMeta["E"] = float(coeffSection.find("Arrhenius").find("E").text)
                 k = cls.k_arr(rateCoeffMeta["A"], rateCoeffMeta["E"], T, R)
-            else:
+            elif coeffSection.find("modifiedArrhenius") != None:
                 rateCoeffMeta["type"] = "modifiedArrhenius"
                 rateCoeffMeta["A"] = float(coeffSection.find("modifiedArrhenius").find("A").text)
                 rateCoeffMeta["b"] = float(coeffSection.find("modifiedArrhenius").find("b").text)
                 rateCoeffMeta["E"] = float(coeffSection.find("modifiedArrhenius").find("E").text)
                 k = cls.k_mod_arr(rateCoeffMeta["A"], rateCoeffMeta["b"], rateCoeffMeta["E"], T, R)
+            else:
+                # Other type of reaction rate coeff
+                k = None # k = ChemUtil.newMethodToComputeK(...)
 
             # Coeffs of reactants, products
             # Split the "_:_" pairs and get the coeff for corresponding species
@@ -276,23 +279,43 @@ class Reaction:
         self.rateCoeffMeta = rateCoeffMeta
         self.reactMeta = reactMeta
 
-    # Future use, possible parameters: T=..., R=..., type=..., A=..., b=..., E...
     def updateCoeff(self, **args):
+        """update the metadata of reaciton rate coefficient and 
+           recalculate the coefficient.
+           
+        INPUTS:
+        =======
+        args: T=..., R=..., type=..., A=..., b=..., E=... 
+        """
         for par in args:
             self.rateCoeffMeta[par] = args[par]
-        # self.k = ChemUtil.newMethodToComputeK(...)
+        meta = self.rateCoeffMeta
+        if self.rateCoeffMeta['type'] =="constant":
+            self.k = ChemUtil.k_const(meta['k'])
+        elif self.rateCoeffMeta['type'] =="Arrhenius":
+            self.k = ChemUtil.k_arr(meta['A'], meta['E'], meta['T'], meta['R'])
+        elif self.rateCoeffMeta['type'] =="modifiedArrhenius":
+            self.k = ChemUtil.k_mod_arr(meta['A'], meta['b'], meta['E'], meta['T'], meta['R'])
+        else:
+            # Other type of reaction rate coeff
+            self.k = None # k = ChemUtil.newMethodToComputeK(...)
         return
 
-    # Future use, possible parameters: reversible=True, type="duplicate reactions"
-    # or "three-body reactions"
     def updateReaction(self, **args):
+        """Update the metadata of the reactionthe possible parameters: "duplicate reactions"
+           
+        INPUTS:
+        =======
+        args: reversible=..., type=..., id=...
+        """
         for par in args:
             self.reactMeta[par] = args[par]
-        # do something
+        # Future use, do something
         return
 
     def __str__(self):
         return self.reactStr + "\n" + \
+               "\t" + "rate coeff: " + str(self.k) + "\n" + \
                "\t" + "rate coeff metadata: " + str(self.rateCoeffMeta) + "\n" + \
                "\t" + "reaction metadata: " + str(self.reactMeta)
 
@@ -308,7 +331,7 @@ class ReactionSystem:
 
         INPUTS:
         =======
-        reactionList: a reactionList object
+        reactionList: list of Reaction object
         
         """
         self.reactionList = reactionList
@@ -324,7 +347,8 @@ class ReactionSystem:
 
         INPUTS:
         =======
-        inputFile: an XML file
+        inputFile: str
+                   file name of an XML file
         
         """
         self.reactionList = ChemUtil.parse(inputFile, self.T, self.R)
@@ -360,7 +384,7 @@ class ReactionSystem:
     def __len__(self):
         return len(self.reactionList)
 
-
+# Some simple test
 if __name__ == '__main__':
     concs = np.array([2.0, 1.0, 0.5, 1.0, 1.0])
     rsystem = ReactionSystem(T_DEFAULT, R_DEFAULT, concs)
@@ -370,6 +394,13 @@ if __name__ == '__main__':
     print(rsystem.getReactionRate())
     print(rsystem)
 
-    rsystem.reactionList[0].updateCoeff(T=0)
-    rsystem.reactionList[0].updateReaction(reversible="yes")
+    print(rsystem.reactionList[2].k, rsystem.reactionList[0].k)
+    rsystem.reactionList[2].updateCoeff(type="modifiedArrhenius", A=100000000.0, b=0.5, E=50000.0) 
+    print(rsystem.reactionList[2].k, rsystem.reactionList[0].k) 
+
+    rsystem.buildFromList(rsystem.reactionList)
     print(rsystem)
+
+    # rsystem.reactionList[0].updateReaction(reversible="yes")
+    # rsystem.buildFromList(rsystem.reactionList)
+    # print(rsystem)
