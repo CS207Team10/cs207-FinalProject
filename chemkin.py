@@ -6,6 +6,7 @@ T_DEFAULT = 1500
 R_DEFAULT = 8.314
 
 class ChemUtil:
+    """The class that contains all the utility functions"""
 
     @classmethod
     def k_const(cls, k=1.0):
@@ -268,7 +269,25 @@ class ChemUtil:
 
 
 class Reaction:
+    """The class that represent a single Reaction
 
+    Parameters
+    ----------
+    reactStr:       str
+                    string representation of the reaction
+    k:              float, default value is 10,
+                    Reaction rate coefficient for the reaction
+    reactCoeff:     numpy array of floats,
+                    size: num_species X num_reactions
+                    stoichiometric coefficients for the reactants
+    productCoeff:   numpy array of floats,
+                    size: num_species X num_reactions
+                    stoichiometric coefficients for the products
+    rateCoeffMeta:  dict
+                    metadata for the reaction rate coefficient
+    reactMeta:      dict
+                    metadata for the reaction
+    """
     def __init__(self, reactStr,
                  k, reactCoeff, productCoeff,
                  rateCoeffMeta, reactMeta):
@@ -321,6 +340,17 @@ class Reaction:
 
 
 class ReactionSystem:
+    """The class that represents a system of reactions
+
+    Parameters
+    ----------
+    T:     float or int
+           the temperature of the system
+    R:     float or int
+           the universal gas constant
+    concs: numpy array of floats
+           concentration of species
+    """
     def __init__(self, T, R, concs):
         self.T = T
         self.R = R
