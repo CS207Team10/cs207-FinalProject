@@ -46,5 +46,5 @@ Our program includes three separate classes: `ChemUtil`, `Reaction` and `Reactio
 
 ### Example Output:
 
-
+![alt text](https://github.com/CS207Team10/cs207-FinalProject/blob/master/example%20output.png)
 
