@@ -36,15 +36,15 @@ pytest --doctest-modules --cov --cov-report term-missing test_chemkin.py
 
 Our program includes three separate classes: `ChemUtil`, `Reaction` and `ReactionSystem`. 
 
-### ChemUtil class
+### ``ChemUtil`` class
 
 `ChemUtil` is an util class that contains all necessary functions to compute the coefficients and rates. It includes functions: `k_const`, `k_arr`, `k_mod_arr`, `progress_rate`, `reaction_rate` and `parse`. 
 
-### Reaction class
+### ``Reaction`` class
 
 `Reaction` is a class that can be used to create a Reaction object. It includes functions: `updateCoeff` and `updateReaction`.
 
-### ReactionSystem class
+### ``ReactionSystem`` class
 
 `ReactionSystem` is a class that represents a ReactionSystem object. It includes functions: `buildFromList`, `buildFromXml`, `getProgressRate` and `getReactionRate`.
 
