@@ -384,23 +384,24 @@ class ReactionSystem:
     def __len__(self):
         return len(self.reactionList)
 
-# Some simple test
-if __name__ == '__main__':
-    concs = np.array([2.0, 1.0, 0.5, 1.0, 1.0])
-    rsystem = ReactionSystem(T_DEFAULT, R_DEFAULT, concs)
-    rsystem.buildFromXml("test1.xml")
+# # Some simple test (commented out for coverage test)
+# if __name__ == '__main__':
+#     concs = np.array([2.0, 1.0, 0.5, 1.0, 1.0])
+#     rsystem = ReactionSystem(T_DEFAULT, R_DEFAULT, concs)
+#     rsystem.buildFromXml("test1.xml")
 
-    print(rsystem.getProgressRate())
-    print(rsystem.getReactionRate())
-    print(rsystem)
+#     print(rsystem.getProgressRate())
+#     print(rsystem.getReactionRate())
+#     print(rsystem)
 
-    print(rsystem.reactionList[2].k, rsystem.reactionList[0].k)
-    rsystem.reactionList[2].updateCoeff(type="modifiedArrhenius", A=100000000.0, b=0.5, E=50000.0) 
-    print(rsystem.reactionList[2].k, rsystem.reactionList[0].k) 
+#     print(rsystem.reactionList[2].k, rsystem.reactionList[0].k)
+#     rsystem.reactionList[2].updateCoeff(type="modifiedArrhenius", A=100000000.0, b=0.5, E=50000.0) 
+#     print(rsystem.reactionList[2].k, rsystem.reactionList[0].k) 
 
-    rsystem.buildFromList(rsystem.reactionList)
-    print(rsystem)
+#     rsystem.buildFromList(rsystem.reactionList)
+#     print(rsystem)
 
-    # rsystem.reactionList[0].updateReaction(reversible="yes")
-    # rsystem.buildFromList(rsystem.reactionList)
-    # print(rsystem)
+#     rsystem.reactionList[0].updateReaction(reversible="yes")
+#     rsystem.buildFromList(rsystem.reactionList)
+#     print(rsystem)
+#     print(rsystem.getProgressRate())
