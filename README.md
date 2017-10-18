@@ -83,44 +83,66 @@ print(rsystem)
 ```
 The system:
 2H2 + O2 =] 2OH + H2
+	rate coeff: 70279405.1912
 	rate coeff metadata: {'T': 1500, 'R': 8.314, 'type': 'modifiedArrhenius', 'A': 100000000.0, 'b': 0.5, 'E': 50000.0}
 	reaction metadata: {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction01'}
 OH + HO2 =] H2O + O2
+	rate coeff: 10000.0
 	rate coeff metadata: {'T': 1500, 'R': 8.314, 'type': 'Constant'}
 	reaction metadata: {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction02'}
 H2O + O2 =] HO2 + OH
+	rate coeff: 4484938.47318
 	rate coeff metadata: {'T': 1500, 'R': 8.314, 'type': 'Arrhenius', 'A': 10000000.0, 'E': 10000.0}
 	reaction metadata: {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction03'}
 ```
 
 And here's how the system deals with some potential extensions later in this project:
 1. Reversible/Non-elementary reactions
-We store this information in the metadata of each reaction, for example:
-```python
-rsystem.reactionList[0].reactMeta
-```
-```
-{'reversible': 'no', 'type': 'Elementary', 'id': 'reaction01'}
-```
+   
+   We store this information in the metadata of each reaction, for example:  
+   ```python
+   rsystem.reactionList[0].reactMeta
+   ```
+   ```
+   {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction01'}
+   ```
 
 2. Reaction rate coefficients not discussed in class
-We can easily add a new method of computing reaction rate coefficients to our `ChemUtil` class.
+
+   We can easily add a new method of computing reaction rate coefficients to our `ChemUtil` class.
 
 3. Other extensions
-We can update the property (metadata) of a single reaction or its reaction rate coefficient (re-compute the coefficient), with any valid parameters. Here's an example of chaning a ``Arrhenius`` type coefficient ``modifiedArrhenius``:
-```python
-print(rsystem.reactionList[2].k, rsystem.reactionList[0].k)
-# using the parameters of the first equation
-rsystem.reactionList[2].updateCoeff(type="modifiedArrhenius", A=100000000.0, b=0.5, E=50000.0) 
-# both ks are same now
-print(rsystem.reactionList[2].k, rsystem.reactionList[0].k) 
-```
-```
-4484938.47318 70279405.1912
-70279405.1912 70279405.1912
-```
-Then rebuild the system using the new variables by 
-```python
-rsystem.buildFromList(rsystem.reactionList)
-print(rsystem)
-```
+
+   We can update the property (metadata) of a single reaction or its reaction rate coefficient (re-compute the coefficient), with any valid parameters. Here's an example of chaning a ``Arrhenius`` type coefficient ``modifiedArrhenius``:
+   ```python
+   print(rsystem.reactionList[2].k, rsystem.reactionList[0].k)
+   # using the parameters of the first equation
+   rsystem.reactionList[2].updateCoeff(type="modifiedArrhenius", A=100000000.0, b=0.5, E=50000.0) 
+   # both ks are same now
+   print(rsystem.reactionList[2].k, rsystem.reactionList[0].k) 
+   ```
+   ```
+   4484938.47318 70279405.1912
+   70279405.1912 70279405.1912
+   ```
+
+   Then rebuild the system using the new variables by 
+   ```python
+   rsystem.buildFromList(rsystem.reactionList)
+   print(rsystem)
+   ```
+   ```
+   The system:
+   2H2 + O2 =] 2OH + H2
+   	rate coeff: 70279405.1912
+   	rate coeff metadata: {'T': 1500, 'R': 8.314, 'type': 'modifiedArrhenius', 'A': 100000000.0, 'b': 0.5, 'E': 50000.0}
+   	reaction metadata: {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction01'}
+   OH + HO2 =] H2O + O2
+   	rate coeff: 10000.0
+   	rate coeff metadata: {'T': 1500, 'R': 8.314, 'type': 'Constant'}
+	reaction metadata: {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction02'}
+   H2O + O2 =] HO2 + OH
+	rate coeff: 70279405.1912
+	rate coeff metadata: {'T': 1500, 'R': 8.314, 'type': 'modifiedArrhenius', 'A': 100000000.0, 'E': 50000.0, 'b': 0.5}
+	reaction metadata: {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction03'}
+   ```
