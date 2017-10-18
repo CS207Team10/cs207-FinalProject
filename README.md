@@ -20,19 +20,25 @@ A parse function is also included in our program, which was designed to parse an
 
 ## Installation:
 
-Our program includes two files: chemkin.py and test_chemkin.py. All the classes and functions necessary to run the library were stored in chemkin.py. All the tests were stored in test_chemkin.py. Both files can be downloaded from our repository. 
+All the classes and functions necessary to run the library were stored in chemkin.py. All the tests were stored in test_chemkin.py. Both files can be downloaded from our repository, or you can obtained them here
+[chemkin.py](https://raw.githubusercontent.com/CS207Team10/cs207-FinalProject/master/chemkin.py), [test_chemkin.py](https://raw.githubusercontent.com/CS207Team10/cs207-FinalProject/master/test_chemkin.py).
 
-To run the program, first make sure you have Python installed on your machine. Then in your terminal, go to the directory where you store the two files. Run `python chemkin.py`. To run tests, run `pytest --cov test_chemkin.py`.
-
+To use our program as library, move the two files into the same directory as your module, and
+```python
+import chemkin.py 
+```
+To run our test program, 
+```
+run pytest --cov test_chemkin.py
+```
 
 ## Basic Usage and Examples: 
-
 
 Our program includes three separate classes: `ChemUtil`, `Reaction` and `ReactionSystem`. 
 
 ### `ChemUtil`
 
-`ChemUtil` is a class that contains necessary functions to compute all the coefficients and rates. It includes functions: `k_const`, `k_arr`, `k_mod_arr`, `progress_rate`, `reaction_rate` and `parse`.
+`ChemUtil` is an util class that contains all necessary functions to compute the coefficients and rates. It includes functions: `k_const`, `k_arr`, `k_mod_arr`, `progress_rate`, `reaction_rate` and `parse`. 
 
 ### `Reaction`:
 
@@ -42,7 +48,6 @@ Our program includes three separate classes: `ChemUtil`, `Reaction` and `Reactio
 
 `ReactionSystem` is a class that represents a ReactionSystem object. It includes functions: `buildFromList`, `buildFromXml`, `getProgressRate` and `getReactionRate`.
 
-### Example Output:
+### Examples:
 
-![alt text](https://github.com/CS207Team10/cs207-FinalProject/blob/master/example%20output.png)
 
