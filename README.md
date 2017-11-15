@@ -137,3 +137,10 @@ H2O + O2 =] HO2 + OH
 
 
 ## Proposed Feature
+You should motivate and describe the feature
+Explain how the feature will fit into your code base (and package)
+Discuss the modules that you will write to realize your feature
+Map out the methods you plan on implementing
+Overview how you envision the user to use your new feature
+Discuss any external dependencies that your feature will require
+
