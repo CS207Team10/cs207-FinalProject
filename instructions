@@ -30,7 +30,7 @@ Files:
 	Milestone1.md:	README.md from milestone1
 	Milestone2.md:  Doc for milestone2
 
-	script.py: 	just a script to test our module and can be ran to demo 			our project 
+	script.py: 	just a script to test our module and can be ran to demo our project 
 
 	setup.py:	needed to install PyPI? 
 
