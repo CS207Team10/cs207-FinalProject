@@ -16,7 +16,7 @@ Based on Le Chatelier's principle, changing the concentration of a chemical will
 
 For irreversible reactions, users may want to know the progress of the reaction by checking the concentration for each reactant and product. For reversible reactions, users may also want to check the concentration for each specie, in order to determine whether the reaction has reached the equilibrium. 
 
-Our team plan to add a new feature to compute the concentration for each specie at a specific time which will be provided by users. Since the concentration change of specie $i$ is determined by the ODE, 
+Our team plan to add a new feature to compute the concentration for each specie at a specific time which will be provided by users. Since the concentration change of specie i is determined by the ODE: 
 
 <a href="http://www.codecogs.com/eqnedit.php?latex=$$\frac{\mathrm{d}x_{i}}{\mathrm{d}t}&space;=&space;f_{i}\left(\mathrm{x},&space;T\right),&space;\qquad&space;i&space;=&space;1,&space;\ldots,&space;N.$$" target="_blank"><img src="http://latex.codecogs.com/gif.latex?$$\frac{\mathrm{d}x_{i}}{\mathrm{d}t}&space;=&space;f_{i}\left(\mathrm{x},&space;T\right),&space;\qquad&space;i&space;=&space;1,&space;\ldots,&space;N.$$" title="$$\frac{\mathrm{d}x_{i}}{\mathrm{d}t} = f_{i}\left(\mathrm{x}, T\right), \qquad i = 1, \ldots, N.$$" /></a>
 
