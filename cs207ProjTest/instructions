@@ -1,0 +1,43 @@
+directories:
+
+	database: 	a) thermo.xml
+				b) database.ipynb:
+					the code that I wrote to build the database
+				c) thermo.sqlite:
+					the database that stores NASA polynomials for each specie
+
+
+	input files: 	a) test1.xml
+					b) rxns.xml:
+						irreversible reactions
+					c) rxns_reversible.xml:
+						reversible reactions
+
+	package:	a)chemkin.py:
+					the original version from milestone1
+				b)chemkin_2.py:
+					Based on chemkin.py, I added some code to read in NASA polynomials for each specie from the database in the parse function.
+					Still need to add reversible function.
+
+	tests:	a)test_chemkin.ipynb
+			b)test_chemkin.py
+
+
+
+
+Files:
+	
+	README.md:	README.md from milestone1
+	Milestone2.md:  Doc for milestone2
+
+	script.py: 	just a script to test our module and can be ran to demo our project 
+
+	setup.py:	needed to install PyPI? 
+
+	thermo.py:	a class to compute backward reaction rate coefficient
+				necessary for reversible reactions
+				provided by Dr. Sondak, and needs to be modified to fit our current module
+
+
+
+
