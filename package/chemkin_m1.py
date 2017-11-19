@@ -1,6 +1,6 @@
 import numpy as np
 import xml.etree.ElementTree as ET
-import sqlite3
+
 # Some globals
 T_DEFAULT = 1500
 R_DEFAULT = 8.314
@@ -214,28 +214,7 @@ class ChemUtil:
         root = tree.getroot()
         species = root.find("phase").find("speciesArray").text.strip().split(" ")
         # print(species)
-        
-        #query NASA polynomial for each species
-        db = sqlite3.connect('database/thermo.sqlite')
-        cursor = db.cursor()
-        #NASA polys for all the species
-        polys = []
-        for s in species:
-            #low temp
-            if T < 1000 and T >= 300:
-                query = 'SELECT COEFF_1,COEFF_2,COEFF_3,COEFF_4,COEFF_5,COEFF_6,COEFF_7 FROM LOW WHERE SPECIES_NAME == "{}"'.format(s)
-            #high temp
-            elif T >= 1000 and T <= 5000 :
-                query = 'SELECT COEFF_1,COEFF_2,COEFF_3,COEFF_4,COEFF_5,COEFF_6,COEFF_7 FROM HIGH WHERE SPECIES_NAME == "{}"'.format(s)
-            else:
-                raise ValueError("T = {}:  Temperature out of range!".format(T))
-                
-            polys.append(list(cursor.execute(query).fetchall()[0]))
-        
-        #print(species)
-        print(polys)
-            
-            
+
         reactionData = root.find("reactionData")
         reactionList = [] # list of "Reaction"
         for row in reactionData:
@@ -435,3 +414,24 @@ class ReactionSystem:
     def __len__(self):
         return len(self.reactionList)
 
+# # Some simple test (commented out for coverage test)
+# if __name__ == '__main__':
+#     concs = np.array([2.0, 1.0, 0.5, 1.0, 1.0])
+#     rsystem = ReactionSystem(T_DEFAULT, R_DEFAULT, concs)
+#     rsystem.buildFromXml("test1.xml")
+
+#     print(rsystem.getProgressRate())
+#     print(rsystem.getReactionRate())
+#     print(rsystem)
+
+#     print(rsystem.reactionList[2].k, rsystem.reactionList[0].k)
+#     rsystem.reactionList[2].updateCoeff(type="modifiedArrhenius", A=100000000.0, b=0.5, E=50000.0) 
+#     print(rsystem.reactionList[2].k, rsystem.reactionList[0].k) 
+
+#     rsystem.buildFromList(rsystem.reactionList)
+#     print(rsystem)
+
+#     rsystem.reactionList[0].updateReaction(reversible="yes")
+#     rsystem.buildFromList(rsystem.reactionList)
+#     print(rsystem)
+#     print(rsystem.getProgressRate())

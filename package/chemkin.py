@@ -1,9 +1,11 @@
 import numpy as np
 import xml.etree.ElementTree as ET
+import sqlite3
+from pathlib import Path
 
-# Some globals
+# Some globals for reference
 T_DEFAULT = 1500
-R_DEFAULT = 8.314
+R_DEFAULT = 8.3144598
 
 class ChemUtil:
     """The class that contains all the utility functions"""
@@ -114,14 +116,17 @@ class ChemUtil:
         return A * T**b * np.exp(-E / R / T)
 
     @classmethod
-    def progress_rate(cls, nu_react, k, concs):
-        """Returns the progress rate of a system of irreversible, elementary reactions
+    def progress_rate(cls, nu_react, nu_prod, k, concs, T, a, reversibleFlagList):
+        """Returns the progress rate of a system elementary reactions (whether reversible or not)
 
         INPUTS:
         =======
         nu_react: numpy array of floats,
                   size: num_species X num_reactions
                   stoichiometric coefficients for the reaction
+        nu_prod:  numpy array of floats,
+                  size: num_species X num_reactions
+                  stoichiometric coefficients for the products
         k:        array of floats
                   Reaction rate coefficient for the reaction
         concs:    numpy array of floats
@@ -129,9 +134,9 @@ class ChemUtil:
 
         RETURNS:
         ========
-        omega: numpy array of floats
-               size: num_reactions
-               progress rate of each reaction
+        progress: numpy array of floats
+                  size: num_reactions
+                  progress rate of each reaction
 
         EXAMPLES:
         =========
@@ -139,22 +144,42 @@ class ChemUtil:
         array([ 40.,  20.])
         """
         progress = k.copy() # Initialize progress rates with reaction rate coefficients
+
         for jdx, rj in enumerate(progress):
             if rj < 0:
                 raise ValueError("k = {0:18.16e}:  Negative reaction rate coefficients are prohibited!".format(rj))
+
+            # initialize the subtraction part for reversible reaction
+            if reversibleFlagList[jdx] == True:
+                sub = ChemUtil.backward_coeffs(rj, nu_prod[:, jdx] - nu_react[:, jdx], T, a)
+            else:
+                sub = 0
+
             for idx, xi in enumerate(concs):
-                nu_ij = nu_react[idx,jdx]
+                nu_ij_r = nu_react[idx,jdx]
+                nu_ij_p = nu_prod[idx,jdx]
                 if xi  < 0.0:
                     raise ValueError("x{0} = {1:18.16e}:  Negative concentrations are prohibited!".format(idx, xi))
-                if nu_ij < 0:
+                if nu_ij_r < 0:
+                    raise ValueError("nu_{0}{1} = {2}:  Negative stoichiometric coefficients are prohibited!".format(idx, jdx, nu_ij))
+                if nu_ij_p < 0:
                     raise ValueError("nu_{0}{1} = {2}:  Negative stoichiometric coefficients are prohibited!".format(idx, jdx, nu_ij))
 
-                progress[jdx] *= xi**nu_ij
+                # forward progress rate
+                progress[jdx] *= xi**nu_ij_r
+
+                # calculate the backward rate if this reaction is reversible
+                if reversibleFlagList[jdx] == True:
+                    sub *= xi**nu_ij_p
+
+            # subtract it to get the overall progress rate
+            progress[jdx] -= sub
+
         return progress
 
     @classmethod
-    def reaction_rate(cls, nu_react, nu_prod, k, concs):
-        """Returns the reaction rate of a system of irreversible, elementary reactions
+    def reaction_rate(cls, nu_react, nu_prod, k, concs, T, a, reversibleFlagList):
+        """Returns the reaction rate of a system of elementary reactions
 
         INPUTS:
         =======
@@ -181,8 +206,81 @@ class ChemUtil:
         array([ 500.,  560.,  580.])
         """
         nu = nu_prod - nu_react
-        rj = cls.progress_rate(nu_react, k, concs)
+        rj = cls.progress_rate(nu_react, nu_prod, k, concs, T, a, reversibleFlagList)
         return np.dot(nu, rj)
+
+    @classmethod
+    def H_over_RT(cls, T, a):
+
+        # WARNING:  This line will depend on your own data structures!
+        # Be careful to get the correct coefficients for the appropriate 
+        # temperature range.  That is, for T <= Tmid get the low temperature 
+        # range coeffs and for T > Tmid get the high temperature range coeffs.
+        H_RT = (a[:,0] + a[:,1] * T / 2.0 + a[:,2] * T**2.0 / 3.0 
+                + a[:,3] * T**3.0 / 4.0 + a[:,4] * T**4.0 / 5.0 
+                + a[:,5] / T)
+
+        return H_RT
+               
+    @classmethod
+    def S_over_R(cls, T, a):
+
+        # WARNING:  This line will depend on your own data structures!
+        # Be careful to get the correct coefficients for the appropriate 
+        # temperature range.  That is, for T <= Tmid get the low temperature 
+        # range coeffs and for T > Tmid get the high temperature range coeffs.
+        S_R = (a[:,0] * np.log(T) + a[:,1] * T + a[:,2] * T**2.0 / 2.0 
+               + a[:,3] * T**3.0 / 3.0 + a[:,4] * T**4.0 / 4.0 + a[:,6])
+
+        return S_R
+
+    @classmethod
+    def backward_coeffs(cls, kf, nu, T, a, p0=100000, R=8.3144598):
+
+        # Change in enthalpy and entropy for each reaction
+        delta_H_over_RT = np.dot(nu.T, cls.H_over_RT(T, a))
+        delta_S_over_R = np.dot(nu.T, cls.S_over_R(T, a))
+
+        # Negative of change in Gibbs free energy for each reaction 
+        delta_G_over_RT = delta_S_over_R - delta_H_over_RT
+
+        # Prefactor in Ke
+        fact = p0 / R / T
+
+        # Ke
+        gamma = np.sum(nu, axis=0)
+        kb = fact**gamma * np.exp(delta_G_over_RT)
+
+        return kf / kb
+
+
+    @classmethod
+    def get_nasa_coeffs(cls, cursor, species, T):
+        a = []
+        for s in species:
+            # check table LOW
+
+            query = '''SELECT * FROM LOW WHERE SPECIES_NAME="{}"'''.format(s)
+            res = cursor.execute(query).fetchall()
+            if len(res) != 1:
+                raise ValueError("Specie {} not in the database!".format(s))
+            if res[0][2] <= T and  T <= res[0][3]: # in the range
+                a.append(list(res[0][-7:]))
+                continue
+
+            # check table HIGH if not in the LOW's range
+            query = '''SELECT * FROM HIGH WHERE SPECIES_NAME="{}"'''.format(s)
+            res = cursor.execute(query).fetchall()
+            if len(res) != 1:
+                raise ValueError("Specie {} not in the database!".format(s))
+            if res[0][2] <= T and  T <= res[0][3]:
+                a.append(list(res[0][-7:]))
+                continue
+
+            # The temperature T is beyond the range
+            raise ValueError("The temperate is beyond the range for species {}!".format(s))
+        return np.array(a)
+
 
     @classmethod
     def parse(cls, inputFile, T, R):
@@ -265,7 +363,7 @@ class ChemUtil:
                                 rateCoeffMeta, reactMeta)
             reactionList.append(reaction)
 
-        return reactionList
+        return reactionList, species
 
 
 class Reaction:
@@ -351,12 +449,18 @@ class ReactionSystem:
     concs: numpy array of floats
            concentration of species
     """
-    def __init__(self, T, R, concs):
+    def __init__(self, T, R, concs, dbFileName):
         self.T = T
         self.R = R
         self.concs = concs
+        my_file = Path("../database/" + dbFileName)
+        if my_file.is_file():
+            self.db = sqlite3.connect(str(my_file))
+        else:
+            raise ValueError("The db file does not exist!")
 
-    def buildFromList(self, reactionList):
+
+    def buildFromList(self, reactionList, species):
         """Build ReactionSystem from a reactionList.
 
         INPUTS:
@@ -368,9 +472,11 @@ class ReactionSystem:
         self.nu_react = np.array([r.reactCoeff for r in self.reactionList]).T
         self.nu_prod = np.array([r.productCoeff for r in self.reactionList]).T
         self.k = np.array([r.k for r in self.reactionList])
-        # print(self.nu_react, self.nu_prod)
-        self.progress_rate = ChemUtil.progress_rate(self.nu_react, self.k, self.concs)
-        self.reaction_rate = ChemUtil.reaction_rate(self.nu_react, self.nu_prod, self.k, self.concs)
+        self.a = ChemUtil.get_nasa_coeffs(self.db.cursor(), self.species, self.T)
+        reversibleFlagList = [r.reactMeta['reversible']=='yes' for r in reactionList]
+        self.progress_rate = ChemUtil.progress_rate(self.nu_react, self.nu_prod, self.k, self.concs, self.T, self.a, reversibleFlagList)
+        self.reaction_rate = ChemUtil.reaction_rate(self.nu_react, self.nu_prod, self.k, self.concs, self.T, self.a, reversibleFlagList)
+
 
     def buildFromXml(self, inputFile):
         """Build ReactionSystem from an input file.
@@ -381,8 +487,8 @@ class ReactionSystem:
                    file name of an XML file
         
         """
-        self.reactionList = ChemUtil.parse(inputFile, self.T, self.R)
-        self.buildFromList(self.reactionList)
+        self.reactionList, self.species = ChemUtil.parse(inputFile, self.T, self.R)
+        self.buildFromList(self.reactionList, self.species)
 
     def getProgressRate(self):
         """Return progress rate.
@@ -414,24 +520,21 @@ class ReactionSystem:
     def __len__(self):
         return len(self.reactionList)
 
-# # Some simple test (commented out for coverage test)
-# if __name__ == '__main__':
-#     concs = np.array([2.0, 1.0, 0.5, 1.0, 1.0])
-#     rsystem = ReactionSystem(T_DEFAULT, R_DEFAULT, concs)
-#     rsystem.buildFromXml("test1.xml")
 
-#     print(rsystem.getProgressRate())
-#     print(rsystem.getReactionRate())
-#     print(rsystem)
+if __name__ == '__main__':
+    
 
-#     print(rsystem.reactionList[2].k, rsystem.reactionList[0].k)
-#     rsystem.reactionList[2].updateCoeff(type="modifiedArrhenius", A=100000000.0, b=0.5, E=50000.0) 
-#     print(rsystem.reactionList[2].k, rsystem.reactionList[0].k) 
+    # my_file = Path("../database/" + "nasa.sqlite")
+    # if my_file.is_file():
+    #     db = sqlite3.connect(str(my_file))
+    #     cursor = db.cursor()
+    #     print(ChemUtil.get_nasa_coeffs(cursor, ["N"], 999))
 
-#     rsystem.buildFromList(rsystem.reactionList)
-#     print(rsystem)
 
-#     rsystem.reactionList[0].updateReaction(reversible="yes")
-#     rsystem.buildFromList(rsystem.reactionList)
-#     print(rsystem)
-#     print(rsystem.getProgressRate())
+    # concs = np.array([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0])
+    # rsystem = ReactionSystem(T_DEFAULT, R_DEFAULT, concs, "nasa.sqlite")
+    # rsystem.buildFromXml("../input file/rxns_reversible.xml")
+
+
+
+
