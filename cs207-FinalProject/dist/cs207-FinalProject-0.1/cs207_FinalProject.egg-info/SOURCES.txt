@@ -1,8 +1,0 @@
-setup.py
-cs207-FinalProject/script.py
-cs207-FinalProject/thermo.py
-cs207_FinalProject.egg-info/PKG-INFO
-cs207_FinalProject.egg-info/SOURCES.txt
-cs207_FinalProject.egg-info/dependency_links.txt
-cs207_FinalProject.egg-info/not-zip-safe
-cs207_FinalProject.egg-info/top_level.txt
