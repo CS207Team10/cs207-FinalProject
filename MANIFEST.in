@@ -1,0 +1,4 @@
+include tests/*.py
+include tests/data/xml/*.xml
+include tests/data/db/*.sqlite
+
