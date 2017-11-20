@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='chemkin_g10',
-      version='0.1',
+      version='0.3',
       description='A chemical kinetics library',
       url='https://github.com/CS207Team10/cs207-FinalProject',
       author='Hidenori Tanaka, Jiachen Song, Xiangru Shu',
@@ -13,5 +13,6 @@ setup(name='chemkin_g10',
           'scipy'
       ],
       setup_requires=['pytest-runner'],
-      tests_require=['pytest'],
-      zip_safe=False)
+      tests_require=['pytest', 'pytest-cov'],
+      include_package_data=True,
+      )
