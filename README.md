@@ -4,6 +4,7 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/CS207Team10/cs207-FinalProject/badge.svg?branch=master)](https://coveralls.io/github/CS207Team10/cs207-FinalProject?branch=master)
 
+
 ## Introduction:
 
 This program is a chemical kinetics library, which can be used to calculate reaction rate coefficients, progress rate and reaction rate for a given system of chemical reactions. 
@@ -26,13 +27,13 @@ A parse function is also included in our library, which was designed to parse an
 
 All the classes and functions necessary to run the library were stored in chemkin_g10. All the tests were stored in tests folder. 
 
-To use our program as library：
+To install program as library (make sure you have pip installed for python3.5+)
 ```
 pip install chemkin_g10 
 ```
-Two samples were provided in the samples folder: irreversible.py and reversible.py.
+Two samples were provided in the **samples** directory: irreversible.py and reversible.py.
 
-To run our samples, go to **samples** directory, and run
+To run our samples, go to the **samples** directory, and run
 ```
 python irreversible.py
 ```
