@@ -137,13 +137,6 @@ H2O + O2 =] HO2 + OH
 
 
 ## Proposed Feature
-You should motivate and describe the feature
-Explain how the feature will fit into your code base (and package)
-Discuss the modules that you will write to realize your feature
-Map out the methods you plan on implementing
-Overview how you envision the user to use your new feature
-Discuss any external dependencies that your feature will require
-
 
 Based on Le Chatelier's principle, changing the concentration of a chemical will have an effect to the reaction equilibrium. Thus, the reaction rate, extent, and yield of products will be altered corresponding to the impact on the system. 
 
