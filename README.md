@@ -21,12 +21,21 @@ A parse function is also included in our library, which was designed to parse an
 
 ## Installation:
 
-All the classes and functions necessary to run the library were stored in chemkin_g10. All the tests were stored in tests folder. All of them can be downloaded from our repository, or you can obtain them here
-[chemkin.py](https://raw.githubusercontent.com/CS207Team10/cs207-FinalProject/master/chemkin_G10/chemkin.py), [test_chemkin_reaction.py](https://raw.githubusercontent.com/CS207Team10/cs207-FinalProject/master/tests/test_chemkin_reaction.py), [test_chemkin_util.py](https://raw.githubusercontent.com/CS207Team10/cs207-FinalProject/master/tests/test_chemkin_util.py).
+All the classes and functions necessary to run the library were stored in chemkin_g10. All the tests were stored in tests folder. (**All of them can be downloaded from our repository, or you can obtain them here
+[chemkin.py](https://raw.githubusercontent.com/CS207Team10/cs207-FinalProject/master/chemkin_G10/chemkin.py), [test_chemkin_reaction.py](https://raw.githubusercontent.com/CS207Team10/cs207-FinalProject/master/tests/test_chemkin_reaction.py), [test_chemkin_util.py](https://raw.githubusercontent.com/CS207Team10/cs207-FinalProject/master/tests/test_chemkin_util.py).** do we still need this?)
 
-To use our program as library, move the two files into the same directory as your module, and
-```python
-import chemkin.py 
+To use our program as library：
+```
+pip install chemkin_g10 
+```
+Two samples were provided in the samples folder: irreversible.py and reversible.py.
+
+To run our samples:
+```
+python irreversible.py
+```
+```
+python reversible.py
 ```
 To run our test program, 
 ```
@@ -35,19 +44,26 @@ pytest --doctest-modules --cov --cov-report term-missing test_chemkin.py
 
 ## Basic Usage and Examples: 
 
-Our program includes three separate classes: `ChemUtil`, `Reaction` and `ReactionSystem`. 
+Our program includes four separate modules: `chemkin`, `computation`, `db` and `thermo`. 
 
-### ``ChemUtil`` class
+### ``chemkin`` class
 
-`ChemUtil` is an util class that contains all necessary functions to compute the coefficients and rates. It includes functions: `k_const`, `k_arr`, `k_mod_arr`, `progress_rate`, `reaction_rate`, `H_over_RT`, `S_over_R`, `backward_coeffs`, `get_nasa_coeffs` and `parse`. 
+`chemkin` is a class that represents a ReactionSystem object and a Reaction object. It includes functions: `updateCoeff`, `updateReaction`, `buildFromList`, `buildFromXml`, `getProgressRate` and `getReactionRate`.
 
-### ``Reaction`` class
+### ``computation`` module
 
-`Reaction` is a class that can be used to create a Reaction object. It includes functions: `updateCoeff` and `updateReaction`.
+`computation` module contains all necessary functions to compute the coefficients and rates. It includes functions: `k_const`, `k_arr`, `k_mod_arr`, `progress_rate`, `reaction_rate`.
 
-### ``ReactionSystem`` class
+ 
+### ``thermo`` module
 
-`ReactionSystem` is a class that represents a ReactionSystem object. It includes functions: `buildFromList`, `buildFromXml`, `getProgressRate` and `getReactionRate`.
+`thermo` includes functions: `H_over_RT`, `S_over_R`, `backward_coeffs`, `get_nasa_coeffs` and `parse`.
+
+### ```db``` module
+
+```db``` contains the functions to read NASA polynomials from the database.
+
+
 
 ### Examples
 
@@ -163,7 +179,7 @@ When forward progress rate is equal to backward progress rate, the reaction reac
 
 Since our module already has the functions to compute forward reaction rate coefficient and backward reaction rate coefficient, if the users provide a time t, we can determine whether the reaction has reached equilibrium by first calculating the concentration for each specie at that time and then comparing the forward progress rate and the backward progress rate.
 
-We will add a new class called ``equilibrium`` under  ``chemkin`` module. It will consist of several new methods, including one method to compute concentration change, which will take a time t as an input parameter, one method to determine equilibrium, and probably some other helper methods.
+We will add a new module called ``equilibrium``. It will consist of several new methods, including one method to compute concentration change, which will take a time t as an input parameter, one method to determine equilibrium, and probably some other helper methods.
 
 To use our new features, the users can first provide the reaction equation, initial concentration for each specie, necessary constants(A, b, E, T, R) and a time t, and then call the concentration change function to compute concentration change for each specie in this reaction, or directly call equilibrium function to see whether the reaction reaches the equilibrium at the given time t.
 
