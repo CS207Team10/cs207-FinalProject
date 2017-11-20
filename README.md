@@ -12,7 +12,7 @@ This program is a chemical kinetics library, which can be used to calculate reac
 
 Each variable stands for A: Arrhenius prefactor, b: Modified Arrhenius parameter, E: Activation Energy, T: Temperature, and R: Ideal gas constant.
 
-Progress rates and reaction rates of elementary reactions and irreversible reactions can also be handled by this program. 
+Progress rates and reaction rates of elementary reactions and both irreversible and reversible reactions can also be handled by this library. 
 
 
 A parse function is also included in our program, which was designed to parse an XML input file provided by users. The function handles the inputs by reading in all the needed data and store them for later calculation.
