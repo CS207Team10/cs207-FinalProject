@@ -8,4 +8,7 @@ setup(name='chemkin_G10',
       author_email="jsong1@g.harvard.edu",
       license="MIT",
       packages=['chemkin_G10'],
+      install_requires=[
+          'numpy',
+      ],
       zip_safe=False)

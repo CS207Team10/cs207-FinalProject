@@ -1,11 +1,13 @@
 import numpy as np
 import xml.etree.ElementTree as ET
 import sqlite3
+import os
 from pathlib import Path
 
 # Some globals for reference
 T_DEFAULT = 1500
 R_DEFAULT = 8.314
+path = os.path.dirname(os.path.realpath(__file__)) + "/../tests/"
 
 class ChemUtil:
     """The class that contains all the utility functions"""
@@ -452,7 +454,7 @@ class ReactionSystem:
     def __init__(self, T, R, dbFileName):
         self.T = T
         self.R = R
-        my_file = Path("../static/db/" + dbFileName)
+        my_file = Path(path + "/data/db/" + dbFileName)
         if my_file.is_file():
             self.db = sqlite3.connect(str(my_file))
         else:
@@ -535,7 +537,7 @@ if __name__ == '__main__':
 
     concs = np.array([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0])
     rsystem = ReactionSystem(T_DEFAULT, R_DEFAULT, "nasa.sqlite")
-    rsystem.buildFromXml("../static/xml/rxns_reversible.xml", concs)
+    rsystem.buildFromXml(path+ "/data/xml/rxns_reversible.xml", concs)
     print(rsystem.getProgressRate())
     print(rsystem.getReactionRate())
 
