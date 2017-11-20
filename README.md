@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/CS207Team10/cs207-FinalProject.svg?branch=master)](https://travis-ci.org/CS207Team10/cs207-FinalProject)
 
-[![Coverage Status](https://coveralls.io/repos/github/CS207Team10/cs207-FinalProject/badge.svg?branch=master&maxAge=1)](https://coveralls.io/github/CS207Team10/cs207-FinalProject?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/CS207Team10/cs207-FinalProject/badge.svg?branch=master)](https://coveralls.io/github/CS207Team10/cs207-FinalProject?branch=master)
 
 ## Introduction:
 
@@ -10,19 +10,20 @@ This program is a chemical kinetics library, which can be used to calculate reac
 
 The functionalities include computing 3 different kinds of reaction rate coefficients: Constant reaction rate coefficients, Arrhenius reaction rate coefficients and Modified Arrhenius reaction rate coefficients as specified below. 
 
-<a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align}&space;&k_{\textrm{const}}&space;=&space;k&space;\tag{constant}&space;\\&space;&k_{\textrm{arr}}&space;=&space;A&space;\exp\left(-\frac{E}{RT}\right)&space;\tag{Arrhenius}&space;\\&space;&k_{\textrm{mod&space;arr}}&space;=&space;A&space;T^{b}&space;\exp\left(-\frac{E}{RT}\right)&space;\tag{Modified&space;Arrhenius}&space;\end{align}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align}&space;&k_{\textrm{const}}&space;=&space;k&space;\tag{constant}&space;\\&space;&k_{\textrm{arr}}&space;=&space;A&space;\exp\left(-\frac{E}{RT}\right)&space;\tag{Arrhenius}&space;\\&space;&k_{\textrm{mod&space;arr}}&space;=&space;A&space;T^{b}&space;\exp\left(-\frac{E}{RT}\right)&space;\tag{Modified&space;Arrhenius}&space;\end{align}" title="\begin{align} &k_{\textrm{const}} = k \tag{constant} \\ &k_{\textrm{arr}} = A \exp\left(-\frac{E}{RT}\right) \tag{Arrhenius} \\ &k_{\textrm{mod arr}} = A T^{b} \exp\left(-\frac{E}{RT}\right) \tag{Modified Arrhenius} \end{align}" /></a>
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\begin{align*}&space;k_{\textrm{const}}&space;&=&space;k&space;&&&space;\text{constant}&space;\\&space;k_{\textrm{arr}}&space;&=&space;A&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Arrhenius}&space;\\&space;k_{\textrm{mod&space;arr}}&space;&=&space;A&space;T^{b}&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Modified&space;Arrhenius}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\begin{align*}&space;k_{\textrm{const}}&space;&=&space;k&space;&&&space;\text{constant}&space;\\&space;k_{\textrm{arr}}&space;&=&space;A&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Arrhenius}&space;\\&space;k_{\textrm{mod&space;arr}}&space;&=&space;A&space;T^{b}&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Modified&space;Arrhenius}&space;\end{align*}" title="\begin{align*} k_{\textrm{const}} &= k && \text{constant} \\ k_{\textrm{arr}} &= A \exp\left(-\frac{E}{RT}\right) && \text{Arrhenius} \\ k_{\textrm{mod arr}} &= A T^{b} \exp\left(-\frac{E}{RT}\right) && \text{Modified Arrhenius} \end{align*}" /></a>
 
 Each variable stands for A: Arrhenius prefactor, b: Modified Arrhenius parameter, E: Activation Energy, T: Temperature, and R: Ideal gas constant.
 
-Progress rates and reaction rates of both irreversible and reversible reactions can also be computed by the library. 
+Progress rates and reaction rates of both **irreversible** and **reversible** reactions can also be computed by the library. Specifically, for **reversible** function, the total progress rate is coumputed by
 
-A parse function is also included in our library, which was designed to parse an XML input file provided by users. The function handles inputs by reading in all the needed data and store them for later calculation.
+And we're using the NASA Polynomial Coefficients for computing and entropy and enthalpy change of each reaction.
+
+A parse function is also included in our library, which was designed to parse an XML input file provided by users. The function handles inputs by reading in all the needed data and store them for later calculation. 
 
 
 ## Installation:
 
-All the classes and functions necessary to run the library were stored in chemkin_g10. All the tests were stored in tests folder. (**All of them can be downloaded from our repository, or you can obtain them here
-[chemkin.py](https://raw.githubusercontent.com/CS207Team10/cs207-FinalProject/master/chemkin_G10/chemkin.py), [test_chemkin_reaction.py](https://raw.githubusercontent.com/CS207Team10/cs207-FinalProject/master/tests/test_chemkin_reaction.py), [test_chemkin_util.py](https://raw.githubusercontent.com/CS207Team10/cs207-FinalProject/master/tests/test_chemkin_util.py).** do we still need this?)
+All the classes and functions necessary to run the library were stored in chemkin_g10. All the tests were stored in tests folder. 
 
 To use our program as library：
 ```
@@ -30,16 +31,16 @@ pip install chemkin_g10
 ```
 Two samples were provided in the samples folder: irreversible.py and reversible.py.
 
-To run our samples:
+To run our samples, go to **samples** directory, and run
 ```
 python irreversible.py
 ```
 ```
 python reversible.py
 ```
-To run our test program, 
+To run our test program, simply run
 ```
-pytest --doctest-modules --cov --cov-report term-missing test_chemkin.py
+pytest
 ```
 
 ## Basic Usage and Examples: 
@@ -48,7 +49,7 @@ Our program includes four separate modules: `chemkin`, `computation`, `db` and `
 
 ### ``chemkin`` class
 
-`chemkin` is a class that represents a ReactionSystem object and a Reaction object. It includes functions: `updateCoeff`, `updateReaction`, `buildFromList`, `buildFromXml`, `getProgressRate` and `getReactionRate`.
+`chemkin` is a class that represents a `ReactionSystem` object and a `Reaction` object. It includes functions: `updateCoeff`, `updateReaction`, `buildFromList`, `buildFromXml`, `getProgressRate`, `getReactionRate` and `parse`, which helps to create a `ReactionSystem` by parsing .xml input file.
 
 ### ``computation`` module
 
@@ -57,7 +58,7 @@ Our program includes four separate modules: `chemkin`, `computation`, `db` and `
  
 ### ``thermo`` module
 
-`thermo` includes functions: `H_over_RT`, `S_over_R`, `backward_coeffs`, `get_nasa_coeffs` and `parse`.
+`thermo` includes functions: `H_over_RT`, `S_over_R`, `backward_coeffs`
 
 ### ```db``` module
 
@@ -70,47 +71,32 @@ Our program includes four separate modules: `chemkin`, `computation`, `db` and `
 A typical workflow starts from initializing a `ReactionSystem` object. We need to set up all the needed variables: `T` (temperature), `R` (universal gas constant) and `concs` (the concentration of each species, and the order should be same with the one in the input file). Here's an example:
 
 ```python
+from chemkin_g10 import chemkin as ck
 import numpy as np
-import chemkin as ck
+
 T = 1500
 R = 8.314
-concs = np.array([2.0, 1.0, 0.5, 1.0, 1.0])
-rsystem = ck.ReactionSystem(T, R, concs)
+concs = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
+rsystem = ck.ReactionSystem(T, R, "tests/data/db/nasa.sqlite") # your path to db file
 ```
 
 Then, we feed an input `.xml` file (see [test1.xml](https://github.com/CS207Team10/cs207-FinalProject/blob/master/test1.xml) or [rxns.xml](https://github.com/CS207Team10/cs207-FinalProject/blob/master/rxns.xml) for the format) to the system by calling `buildFromXml` function:
 
 ```python
-rsystem.buildFromXml("test1.xml")
+rsystem.buildFromXml("tests/data/xml/rxns_reversible.xml", concs) # your path to xml file
 ```
 
 We then can easily retrieve the progress rate and reaction rate by:
 
 ```python
-rsystem.getProgressRate()
-rsystem.getReactionRate()
+print("Progress rate: \n", rsystem.getProgressRate(), "\n")
+print("Reaction rate: \n", rsystem.getReactionRate(), "\n")
 ```
 
 If we want to get a summary of each reaction and also the whole system, we can do this by:
 
 ```python
-print(rsystem)
-
-```
-```
-The system:
-2H2 + O2 =] 2OH + H2
-	rate coeff: 70279405.1912
-	rate coeff metadata: {'T': 1500, 'R': 8.314, 'type': 'modifiedArrhenius', 'A': 100000000.0, 'b': 0.5, 'E': 50000.0}
-	reaction metadata: {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction01'}
-OH + HO2 =] H2O + O2
-	rate coeff: 10000.0
-	rate coeff metadata: {'T': 1500, 'R': 8.314, 'type': 'Constant'}
-	reaction metadata: {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction02'}
-H2O + O2 =] HO2 + OH
-	rate coeff: 4484938.47318
-	rate coeff metadata: {'T': 1500, 'R': 8.314, 'type': 'Arrhenius', 'A': 10000000.0, 'E': 10000.0}
-	reaction metadata: {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction03'}
+print("System info: \b", rsystem, "\n")
 ```
 
 ### Extensibility
