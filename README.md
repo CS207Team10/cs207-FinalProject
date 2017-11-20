@@ -12,7 +12,7 @@ This program is a chemical kinetics library, which can be used to calculate reac
 
 Each variable stands for A: Arrhenius prefactor, b: Modified Arrhenius parameter, E: Activation Energy, T: Temperature, and R: Ideal gas constant.
 
-Progress rates and reaction rates of elementary reactions and irreversible reactions can also be handled by this program. 
+Progress rates and reaction rates of elementary reactions and both irreversible and reversible reactions can also be handled by this library. 
 
 
 A parse function is also included in our program, which was designed to parse an XML input file provided by users. The function handles the inputs by reading in all the needed data and store them for later calculation.
@@ -38,7 +38,7 @@ Our program includes three separate classes: `ChemUtil`, `Reaction` and `Reactio
 
 ### ``ChemUtil`` class
 
-`ChemUtil` is an util class that contains all necessary functions to compute the coefficients and rates. It includes functions: `k_const`, `k_arr`, `k_mod_arr`, `progress_rate`, `reaction_rate` and `parse`. 
+`ChemUtil` is an util class that contains all necessary functions to compute the coefficients and rates. It includes functions: `k_const`, `k_arr`, `k_mod_arr`, `progress_rate`, `reaction_rate`, `H_over_RT`, `S_over_R`, `backward_coeffs`, `get_nasa_coeffs` and `parse`. 
 
 ### ``Reaction`` class
 
