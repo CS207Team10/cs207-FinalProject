@@ -15,6 +15,7 @@ The functionalities include computing 3 different kinds of reaction rate coeffic
 Each variable stands for A: Arrhenius prefactor, b: Modified Arrhenius parameter, E: Activation Energy, T: Temperature, and R: Ideal gas constant.
 
 Progress rates and reaction rates of both **irreversible** and **reversible** reactions can also be computed by the library. Specifically, for **reversible** function, the total progress rate is coumputed by
+<img src="https://github.com/CS207Team10/cs207-FinalProject/blob/master/docs/images/backward.svg">
 
 And we're using the NASA Polynomial Coefficients for computing and entropy and enthalpy change of each reaction.
 
@@ -80,7 +81,7 @@ concs = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
 rsystem = ck.ReactionSystem(T, R, "tests/data/db/nasa.sqlite") # your path to db file
 ```
 
-Then, we feed an input `.xml` file (see [test1.xml](https://github.com/CS207Team10/cs207-FinalProject/blob/master/test1.xml) or [rxns.xml](https://github.com/CS207Team10/cs207-FinalProject/blob/master/rxns.xml) for the format) to the system by calling `buildFromXml` function:
+Then, we feed an input `.xml` file (see [example1](https://github.com/CS207Team10/cs207-FinalProject/blob/master/tests/data/xml/rxns_short_1.xml) or [example2](https://github.com/CS207Team10/cs207-FinalProject/blob/master/tests/data/xml/rxns_reversible.xml) for the format) **and** a numpy array of concerntrations of each species to the system by calling `buildFromXml` function:
 
 ```python
 rsystem.buildFromXml("tests/data/xml/rxns_reversible.xml", concs) # your path to xml file
@@ -133,10 +134,6 @@ print("System info: \b", rsystem, "\n")
    ```python
    rsystem.buildFromList(rsystem.reactionList)
    ```
-
-
-[Milestone 2 Rubric](https://github.com/IACS-CS-207/cs207-F17/blob/master/project/milestone2/milestone2_rubric.md)
-
 
 ## Proposed Feature
 
