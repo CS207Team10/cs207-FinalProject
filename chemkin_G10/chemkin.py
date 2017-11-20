@@ -5,7 +5,7 @@ from pathlib import Path
 
 # Some globals for reference
 T_DEFAULT = 1500
-R_DEFAULT = 8.3144598
+R_DEFAULT = 8.314
 
 class ChemUtil:
     """The class that contains all the utility functions"""
@@ -161,9 +161,9 @@ class ChemUtil:
                 if xi  < 0.0:
                     raise ValueError("x{0} = {1:18.16e}:  Negative concentrations are prohibited!".format(idx, xi))
                 if nu_ij_r < 0:
-                    raise ValueError("nu_{0}{1} = {2}:  Negative stoichiometric coefficients are prohibited!".format(idx, jdx, nu_ij))
+                    raise ValueError("nu_{0}{1} = {2}:  Negative stoichiometric coefficients are prohibited!".format(idx, jdx, nu_ij_r))
                 if nu_ij_p < 0:
-                    raise ValueError("nu_{0}{1} = {2}:  Negative stoichiometric coefficients are prohibited!".format(idx, jdx, nu_ij))
+                    raise ValueError("nu_{0}{1} = {2}:  Negative stoichiometric coefficients are prohibited!".format(idx, jdx, nu_ij_p))
 
                 # forward progress rate
                 progress[jdx] *= xi**nu_ij_r
@@ -449,18 +449,17 @@ class ReactionSystem:
     concs: numpy array of floats
            concentration of species
     """
-    def __init__(self, T, R, concs, dbFileName):
+    def __init__(self, T, R, dbFileName):
         self.T = T
         self.R = R
-        self.concs = concs
-        my_file = Path("../database/" + dbFileName)
+        my_file = Path("../static/db/" + dbFileName)
         if my_file.is_file():
             self.db = sqlite3.connect(str(my_file))
         else:
             raise ValueError("The db file does not exist!")
 
 
-    def buildFromList(self, reactionList, species):
+    def buildFromList(self, reactionList, species, concs):
         """Build ReactionSystem from a reactionList.
 
         INPUTS:
@@ -468,6 +467,10 @@ class ReactionSystem:
         reactionList: list of Reaction object
         
         """
+        if len(species) != len(concs):
+            raise ValueError("Size of concentration does not match to number of species!")
+
+        self.concs = concs
         self.reactionList = reactionList
         self.nu_react = np.array([r.reactCoeff for r in self.reactionList]).T
         self.nu_prod = np.array([r.productCoeff for r in self.reactionList]).T
@@ -478,7 +481,7 @@ class ReactionSystem:
         self.reaction_rate = ChemUtil.reaction_rate(self.nu_react, self.nu_prod, self.k, self.concs, self.T, self.a, reversibleFlagList)
 
 
-    def buildFromXml(self, inputFile):
+    def buildFromXml(self, inputFile, concs):
         """Build ReactionSystem from an input file.
 
         INPUTS:
@@ -487,8 +490,15 @@ class ReactionSystem:
                    file name of an XML file
         
         """
-        self.reactionList, self.species = ChemUtil.parse(inputFile, self.T, self.R)
-        self.buildFromList(self.reactionList, self.species)
+        
+        reactionList, species = ChemUtil.parse(inputFile, self.T, self.R)
+        if len(species) != len(concs):
+            raise ValueError("Size of concentration does not match to number of species!")
+
+        self.reactionList = reactionList
+        self.species = species
+        self.concs = concs
+        self.buildFromList(self.reactionList, self.species, self.concs)
 
     def getProgressRate(self):
         """Return progress rate.
@@ -522,18 +532,12 @@ class ReactionSystem:
 
 
 if __name__ == '__main__':
-    
 
-    # my_file = Path("../database/" + "nasa.sqlite")
-    # if my_file.is_file():
-    #     db = sqlite3.connect(str(my_file))
-    #     cursor = db.cursor()
-    #     print(ChemUtil.get_nasa_coeffs(cursor, ["N"], 999))
-
-
-    # concs = np.array([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0])
-    # rsystem = ReactionSystem(T_DEFAULT, R_DEFAULT, concs, "nasa.sqlite")
-    # rsystem.buildFromXml("../input file/rxns_reversible.xml")
+    concs = np.array([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0])
+    rsystem = ReactionSystem(T_DEFAULT, R_DEFAULT, "nasa.sqlite")
+    rsystem.buildFromXml("../static/xml/rxns_reversible.xml", concs)
+    print(rsystem.getProgressRate())
+    print(rsystem.getReactionRate())
 
 
 
