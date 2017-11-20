@@ -10,5 +10,8 @@ setup(name='chemkin_G10',
       packages=['chemkin_G10'],
       install_requires=[
           'numpy',
+          'scipy'
       ],
+      setup_requires=['pytest-runner'],
+      tests_require=['pytest'],
       zip_safe=False)
