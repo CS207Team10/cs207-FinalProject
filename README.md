@@ -21,7 +21,7 @@ A parse function is also included in our library, which was designed to parse an
 
 ## Installation:
 
-All the classes and functions necessary to run the library were stored in chemkin.py. All the tests were stored in test_chemkin.py. Both files can be downloaded from our repository, or you can obtain them here
+All the classes and functions necessary to run the library were stored in chemkin.py. All the tests were stored in tests folder. All of them can be downloaded from our repository, or you can obtain them here
 [chemkin.py](https://raw.githubusercontent.com/CS207Team10/cs207-FinalProject/master/chemkin.py), [test_chemkin.py](https://raw.githubusercontent.com/CS207Team10/cs207-FinalProject/master/test_chemkin.py).
 
 To use our program as library, move the two files into the same directory as your module, and
