@@ -38,7 +38,7 @@ Our program includes three separate classes: `ChemUtil`, `Reaction` and `Reactio
 
 ### ``ChemUtil`` class
 
-`ChemUtil` is an util class that contains all necessary functions to compute the coefficients and rates. It includes functions: `k_const`, `k_arr`, `k_mod_arr`, `progress_rate`, `reaction_rate` and `parse`. 
+`ChemUtil` is an util class that contains all necessary functions to compute the coefficients and rates. It includes functions: `k_const`, `k_arr`, `k_mod_arr`, `progress_rate`, `reaction_rate`, `H_over_RT`, `S_over_R`, `backward_coeffs`, `get_nasa_coeffs` and `parse`. 
 
 ### ``Reaction`` class
 
