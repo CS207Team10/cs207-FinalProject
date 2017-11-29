@@ -1,0 +1,17 @@
+Menu:
+
+1. print reaction system info
+2. progress rate
+3. reaction rate
+4. plot concentrations:
+	- input time t:
+		a) all species?
+		b) one rxn?
+		c) one specie?
+		
+5. check equilibrium:
+	- choose reaction
+	- input time t
+		a) irreversible: error
+		b) reversible: plot concentrations and check whether the reaction reaches equilibruim
+
