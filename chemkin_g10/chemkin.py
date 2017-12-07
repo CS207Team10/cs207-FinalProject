@@ -2,6 +2,9 @@ import numpy as np
 import xml.etree.ElementTree as ET
 import chemkin_g10.computation as cp
 from chemkin_g10.db import DatabaseOps as dbops
+from scipy.integrate import odeint
+import matplotlib.pyplot as plt
+
 
 class Reaction:
     """The class that represent a single Reaction
@@ -109,9 +112,9 @@ class ReactionSystem:
         self.nu_prod = np.array([r.productCoeff for r in self.reactionList]).T
         self.k = np.array([r.k for r in self.reactionList])
         self.a = self.dbops.get_coeffs(self.species, self.T)
-        reversibleFlagList = [r.reactMeta['reversible']=='yes' for r in reactionList]
-        self.progress_rate = cp.progress_rate(self.nu_react, self.nu_prod, self.k, self.concs, self.T, self.a, reversibleFlagList)
-        self.reaction_rate = cp.reaction_rate(self.nu_react, self.nu_prod, self.k, self.concs, self.T, self.a, reversibleFlagList)
+        self.reversibleFlagList = [r.reactMeta['reversible']=='yes' for r in reactionList]
+        self.progress_rate = cp.progress_rate(self.nu_react, self.nu_prod, self.k, self.concs, self.T, self.a, self.reversibleFlagList)
+        self.reaction_rate = cp.reaction_rate(self.nu_react, self.nu_prod, self.k, self.concs, self.T, self.a, self.reversibleFlagList)
 
 
     def buildFromXml(self, inputFile, concs):
@@ -152,6 +155,48 @@ class ReactionSystem:
         
         """
         return self.reaction_rate
+
+
+    def dxdt(self, concs, t, nu_react, nu_prod, k, T, a, reversibleFlagList):
+        """Return derivatives of concentrations
+
+        RETURN:
+        =======
+        dx/dt: derivatives of concentrations
+        """
+        nu = nu_prod - nu_react
+        rj = cp.progress_rate(nu_react, nu_prod, k, concs, T, a, reversibleFlagList)
+        return np.dot(nu, rj)
+
+    def ode(self, t):
+        """Return derivatives of concentrations.
+
+        RETURN:
+        =======
+        yout: derivatives of concentrations
+        
+        """         
+        self.tout = np.linspace(0, t)
+        self.yout = odeint(self.dxdt, self.concs, self.tout, (self.nu_react, self.nu_prod, self.k, self.T, self.a, self.reversibleFlagList))
+        print(len(self.yout))
+        return self.yout
+        
+    def plot_sys(self):
+        """Plot concentration for all species in the reaction system
+       
+        """ 
+        plt.plot(self.tout, self.yout)
+        plt.legend(self.species)
+        plt.show()
+
+    def plot_specie(self, index):
+        """Plot concentration for one specie in the reaction system
+       
+        """ 
+        out = np.transpose(self.yout)[index]
+        plt.plot(self.tout, out, label = self.species[index])
+        plt.legend()
+        plt.show()
 
     @classmethod
     def parse(cls, inputFile, T, R):
@@ -246,6 +291,20 @@ class ReactionSystem:
 
     def __len__(self):
         return len(self.reactionList)
+
+
+if __name__ == '__main__':
+    T = 900
+    R = 8.314
+    concs = np.array([0.5, 0, 0, 2, 0, 1, 0, 0])
+    rsystem = ReactionSystem(T, R, "../tests/data/db/nasa.sqlite")
+    rsystem.buildFromXml("../tests/data/xml/rxns_reversible.xml", concs)
+    print("Progress rate: \n", rsystem.getProgressRate(), "\n")
+    print("Reaction rate: \n", rsystem.getReactionRate(), "\n")
+    # print("System info: \b", rsystem, "\n")
+    print(rsystem.ode(2))
+    print(rsystem.plot_sys())
+
 
 
 
