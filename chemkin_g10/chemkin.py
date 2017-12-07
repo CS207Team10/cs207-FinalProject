@@ -157,15 +157,15 @@ class ReactionSystem:
         return self.reaction_rate
 
 
-    def dxdt(self, concs, t, nu_react, nu_prod, k, T, a, reversibleFlagList):
+    def dydt(self, concs, t):
         """Return derivatives of concentrations
 
         RETURN:
         =======
         dx/dt: derivatives of concentrations
         """
-        nu = nu_prod - nu_react
-        rj = cp.progress_rate(nu_react, nu_prod, k, concs, T, a, reversibleFlagList)
+        nu = self.nu_prod - self.nu_react
+        rj = cp.progress_rate(self.nu_react, self.nu_prod, self.k, concs, self.T, self.a, self.reversibleFlagList)
         return np.dot(nu, rj)
 
     def ode(self, t):
@@ -176,9 +176,8 @@ class ReactionSystem:
         yout: derivatives of concentrations
         
         """         
-        self.tout = np.linspace(0, t)
-        self.yout = odeint(self.dxdt, self.concs, self.tout, (self.nu_react, self.nu_prod, self.k, self.T, self.a, self.reversibleFlagList))
-        print(len(self.yout))
+        self.tout = np.linspace(0, t/1e10)
+        self.yout = odeint(self.dydt, self.concs, self.tout)
         return self.yout
         
     def plot_sys(self):
@@ -302,7 +301,7 @@ if __name__ == '__main__':
     print("Progress rate: \n", rsystem.getProgressRate(), "\n")
     print("Reaction rate: \n", rsystem.getReactionRate(), "\n")
     # print("System info: \b", rsystem, "\n")
-    print(rsystem.ode(2))
+    print(rsystem.ode(3))
     print(rsystem.plot_sys())
 
 
