@@ -158,22 +158,35 @@ class ReactionSystem:
 
 
     def dydt(self, concs, t):
-        """Return derivatives of concentrations
+        """Return derivatives of concentrations.
+
+        INPUTS:
+        =======
+        concs: an array of floats
+               concentrations for all the species
+        t: a float
+           integration time stamp
 
         RETURN:
         =======
-        dx/dt: derivatives of concentrations
+        dy/dt: derivatives of concentrations
         """
         nu = self.nu_prod - self.nu_react
         rj = cp.progress_rate(self.nu_react, self.nu_prod, self.k, concs, self.T, self.a, self.reversibleFlagList)
         return np.dot(nu, rj)
 
     def ode(self, t):
-        """Return derivatives of concentrations.
+        """Return concentrations for each specie at each time stamp.
+
+        INPUTS:
+        =======
+        t: a float
+           integration time stamp
 
         RETURN:
         =======
-        yout: derivatives of concentrations
+        yout: array of floats
+              concentrations for each specie at each time stamp
         
         """         
         self.tout = np.linspace(0, t/1e10)
@@ -196,6 +209,21 @@ class ReactionSystem:
         plt.plot(self.tout, out, label = self.species[index])
         plt.legend()
         plt.show()
+
+    def equilibrium(self):
+        """Check if the reaction system has reached equilibrium
+
+
+        RETURN:
+        =======
+        eq: boolean
+            if the reaction system has reached equilibrium
+       
+        """ 
+
+        slope_diff = (self.yout[-1] - self.yout[-2])/(self.tout[-1]/len(self.tout))
+        critical_slope = max(self.yout[-1])/(self.tout[-1])*1e-8
+        return all(s < critical_slope for s in slope_diff)
 
     @classmethod
     def parse(cls, inputFile, T, R):
@@ -295,14 +323,15 @@ class ReactionSystem:
 if __name__ == '__main__':
     T = 900
     R = 8.314
-    concs = np.array([0.5, 0, 0, 2, 0, 1, 0, 0])
+    concs = np.array([0.5, 1, 1, 2, 1, 1, 0, 0])
     rsystem = ReactionSystem(T, R, "../tests/data/db/nasa.sqlite")
     rsystem.buildFromXml("../tests/data/xml/rxns_reversible.xml", concs)
     print("Progress rate: \n", rsystem.getProgressRate(), "\n")
     print("Reaction rate: \n", rsystem.getReactionRate(), "\n")
     # print("System info: \b", rsystem, "\n")
-    print(rsystem.ode(3))
+    print(rsystem.ode(10))
     print(rsystem.plot_sys())
+    print(rsystem.equilibrium())
 
 
 
