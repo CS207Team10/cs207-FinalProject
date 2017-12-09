@@ -190,7 +190,18 @@ class ReactionSystem:
         
         """         
         self.tout = np.linspace(0, t/1e10)
-        self.yout = odeint(self.dydt, self.concs, self.tout)
+        self.yout = self.concs
+        try:
+            self.yout = odeint(self.dydt, self.concs, self.tout)
+            # for y in self.yout:
+            #     for c in y:
+            #         if c < 0:
+            #             c  = 0
+
+        except ValueError:
+            print("Invalid time stamp!")
+
+        
         return self.yout
         
     def plot_sys(self):
@@ -323,15 +334,16 @@ class ReactionSystem:
 if __name__ == '__main__':
     T = 900
     R = 8.314
-    concs = np.array([0.5, 1, 1, 2, 1, 1, 0, 0])
+    concs = np.array([0.5, 0, 0, 2, 0, 1, 0, 0])
     rsystem = ReactionSystem(T, R, "../tests/data/db/nasa.sqlite")
     rsystem.buildFromXml("../tests/data/xml/rxns_reversible.xml", concs)
     print("Progress rate: \n", rsystem.getProgressRate(), "\n")
     print("Reaction rate: \n", rsystem.getReactionRate(), "\n")
     # print("System info: \b", rsystem, "\n")
-    print(rsystem.ode(10))
-    print(rsystem.plot_sys())
-    print(rsystem.equilibrium())
+    # print(rsystem.ode(0.3))
+    # print(rsystem.plot_sys())
+    # print(rsystem.plot_specie(4))
+    # print(rsystem.equilibrium())
 
 
 
