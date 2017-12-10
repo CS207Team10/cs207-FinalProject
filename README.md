@@ -171,6 +171,6 @@ To use our new features, the users can first provide the reaction equation, init
 It is useful to know if the system has reached equilibrium at the end of the simulation at time "t".
 The new feature named "equilibrium" judges if the sytem has reached equilibrium.
 Here, we consider a simulation with time-interval (0,t).
-If the largest concentration among chemical species at time "t" is "C", then the characteristic slope of the system can be calculated as "C/t".
-We judge the system to be in equilibrium if all the slopes of the concentrations at the last two time steps are less than the value "1e-8xC/t".
+If the largest concentration among chemical species at time "t" is "C", then the characteristic slope of the c(t) curves can be calculated as "C/t".
+We judge the system to be in equilibrium if all the slopes of the concentrations at the last two time steps are less than the critical slope value "1e-8xC/t".
 
