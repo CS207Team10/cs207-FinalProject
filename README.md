@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/CS207Team10/cs207-FinalProject/badge.svg?branch=master&maxAge=1)](https://coveralls.io/github/CS207Team10/cs207-FinalProject?branch=master)
 
 
-## Introduction:
+## Introduction
 
 This program is a chemical kinetics library, which can be used to calculate reaction rate coefficients, progress rate and reaction rate for a given system of chemical reactions. 
 
@@ -23,7 +23,7 @@ And we're using the NASA Polynomial Coefficients for computing and entropy and e
 A parse function is also included in our library, which was designed to parse an XML input file provided by users. The function handles inputs by reading in all the needed data and store them for later calculation. 
 
 
-## Installation:
+## Installation
 
 All the classes and functions necessary to run the library were stored in chemkin_g10. All the tests were stored in tests folder. 
 
@@ -45,7 +45,7 @@ To run our test program, simply run
 pytest
 ```
 
-## Basic Usage and Examples: 
+## Basic Usage and Examples
 
 Our program includes four separate modules: `chemkin`, `computation`, `db` and `thermo`. 
 
@@ -136,7 +136,11 @@ print("System info: \b", rsystem, "\n")
    rsystem.buildFromList(rsystem.reactionList)
    ```
 
-## Proposed Feature
+## New Feature
+
+### ODE Solver
+
+### Plot
 
 Based on Le Chatelier's principle, changing the concentration of a chemical will have an effect to the reaction equilibrium. Thus, the reaction rate, extent, and yield of products will be altered corresponding to the impact on the system. 
 
@@ -174,3 +178,4 @@ Here, we consider a simulation with time-interval (0,t).
 If the largest concentration among chemical species at time "t" is "C", then the characteristic slope of the c(t) curves can be calculated as "C/t".
 We judge the system to be in equilibrium if all the slopes of the concentrations at the last two time steps are less than the critical slope value "1e-8xC/t".
 
+### Web?
