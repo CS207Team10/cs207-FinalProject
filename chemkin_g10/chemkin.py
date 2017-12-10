@@ -1,6 +1,6 @@
 import numpy as np
 import xml.etree.ElementTree as ET
-import chemkin_g10.computation as cp
+import computation as cp
 from chemkin_g10.db import DatabaseOps as dbops
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
@@ -115,6 +115,7 @@ class ReactionSystem:
         self.reversibleFlagList = [r.reactMeta['reversible']=='yes' for r in reactionList]
         self.progress_rate = cp.progress_rate(self.nu_react, self.nu_prod, self.k, self.concs, self.T, self.a, self.reversibleFlagList)
         self.reaction_rate = cp.reaction_rate(self.nu_react, self.nu_prod, self.k, self.concs, self.T, self.a, self.reversibleFlagList)
+        self.equilibrium_constant = cp.equilibrium_constant(self.nu_react, self.nu_prod, self.k, self.T, self.a, self.reversibleFlagList)
 
 
     def buildFromXml(self, inputFile, concs):
@@ -155,103 +156,6 @@ class ReactionSystem:
         
         """
         return self.reaction_rate
-
-
-    def dydt(self, concs, t):
-        """Return derivatives of concentrations.
-
-        INPUTS:
-        =======
-        concs: an array of floats
-               concentrations for all the species
-        t: a float
-           integration time stamp
-
-        RETURN:
-        =======
-        dy/dt: derivatives of concentrations
-        """
-        nu = self.nu_prod - self.nu_react
-        rj = cp.progress_rate(self.nu_react, self.nu_prod, self.k, concs, self.T, self.a, self.reversibleFlagList)
-        return np.dot(nu, rj)
-
-    def ode(self, t):
-        """Return concentrations for each specie at each time stamp.
-
-        INPUTS:
-        =======
-        t: a float
-           integration time stamp
-
-        RETURN:
-        =======
-        yout: array of floats
-              concentrations for each specie at each time stamp
-        
-        """         
-        self.tout = np.linspace(0, t/1e10)
-        self.yout = self.concs
-        try:
-            self.yout = odeint(self.dydt, self.concs, self.tout)
-            # for y in self.yout:
-            #     for c in y:
-            #         if c < 0:
-            #             c  = 0
-
-        except ValueError:
-            print("Invalid time stamp!")
-
-        
-        return self.yout
-        
-    def plot_sys(self):
-        """Plot concentration for all species in the reaction system
-       
-        """ 
-        if len(self.yout) != 50:
-            raise ValueError("Invalid yout!")
-
-        plt.plot(self.tout, self.yout)
-        plt.legend(self.species)
-        plt.show()
-
-    def plot_specie(self, index):
-        """Plot concentration for one specie in the reaction system
-       
-        """ 
-        if len(self.yout) != 50:
-            raise ValueError("Invalid yout!")
-        out = np.transpose(self.yout)[index]
-        plt.plot(self.tout, out, label = self.species[index])
-        plt.legend()
-        plt.show()
-
-    def equilibrium_graph(self):
-        """Check if the reaction system has reached equilibrium
-
-
-        RETURN:
-        =======
-        eq: boolean
-            if the reaction system has reached equilibrium
-       
-        """ 
-
-        slope_diff = (self.yout[-1] - self.yout[-2])/(self.tout[-1]/len(self.tout))
-        critical_slope = max(self.yout[-1])/(self.tout[-1])*1e-8
-        return all(s < critical_slope for s in slope_diff)
-
-    def equilibrium(self):
-        if len(self.yout) != 50:
-            raise ValueError("Invalid yout!")
-        
-        
-        eq_rxn_rate = cp.progress_rate(self.nu_react, self.nu_prod, self.k, self.yout[-1], self.T, self.a, self.reversibleFlagList)
-        res = [ r == 0 for r in eq_rxn_rate]
-
-        #print(eq_rxn_rate)
-        #print(self.reversibleFlagList)
-        return res
 
 
     @classmethod
@@ -349,6 +253,101 @@ class ReactionSystem:
         return len(self.reactionList)
 
 
+
+class Simulator:
+
+    def __init__(self, rsystem, maxTime, numSample=100, timeScale=1e9, eqThreshold=1e-05):
+        self.rsystem = rsystem
+        self.maxTime = maxTime
+        self.numSample = numSample
+        self.timeScale = timeScale
+        self.eqThreshold = eqThreshold        
+
+    def solveODE(self):
+        """Solve the ODE
+        """       
+
+        # dy/dt
+        def fun(concs, t):
+            nu = self.rsystem.nu_prod - self.rsystem.nu_react
+            rj = cp.progress_rate(self.rsystem.nu_react, self.rsystem.nu_prod, self.rsystem.k, concs, self.rsystem.T, self.rsystem.a, 
+                                  self.rsystem.reversibleFlagList, solvingODE=True)
+            return np.dot(nu, rj)
+
+        tout = np.linspace(0, self.maxTime/self.timeScale, self.numSample)
+
+        try:
+            self.yout = odeint(fun, self.rsystem.concs, tout)
+            self.tout = tout
+        except ValueError:
+            print("ODE solver aborted!")
+            raise
+        if len(self.yout) != self.numSample:
+            raise ValueError("Invalid yout!")
+
+        # get equilibrium point for each time point
+        eq_point = [-1 for i in range(len(self.rsystem))]
+        eq_diff = [[None for j in range(len(self.rsystem))] for i in range(self.numSample)] 
+        eq_constant = self.rsystem.equilibrium_constant
+
+        for i, concs in enumerate(self.yout):
+            if i == 0: continue # there's no product at the beginning
+            current_concs = concs.reshape(len(self.rsystem.species), 1)
+            reaction_quotient = np.product(current_concs ** self.rsystem.nu_prod, axis=0) / np.product(current_concs ** self.rsystem.nu_react, axis=0)
+            
+            for j, rq in enumerate(reaction_quotient):
+                if not self.rsystem.reversibleFlagList[j]:
+                    continue
+
+                eq_diff[i][j] = abs(rq - eq_constant[j]) / eq_constant[j]
+
+                if eq_point[j] != -1:
+                    continue
+
+                if eq_diff[i][j] < self.eqThreshold:
+                    # eq_point[j] = self.tout[i]
+                    eq_point[j] = i
+
+        self.eq_point = eq_point
+        self.eq_diff = eq_diff
+        return
+
+    def check_equilibrium(self, index, t):
+        if len(self.yout) != self.numSample:
+            raise ValueError("Invalid yout!")
+        if eq_point[index] == -1:
+            return False
+        return t >= eq_point[index]
+
+
+    def plot_specie_all(self):
+        """Plot concentration for all species in the reaction system
+       
+        """ 
+        if len(self.yout) != self.numSample:
+            raise ValueError("Invalid yout!")
+        plt.plot(self.tout, self.yout)
+        plt.legend(self.rsystem.species)
+        plt.show()
+
+    def plot_specie(self, index):
+        """Plot concentration for one specie in the reaction system
+       
+        """ 
+        if len(self.yout) != self.numSample:
+            raise ValueError("Invalid yout!")
+        out = np.transpose(self.yout)[index]
+        plt.plot(self.tout, out, label = self.rsystem.species[index])
+        plt.legend()
+        plt.show()
+
+    def plot_reaction_all(self):
+        if len(self.yout) != self.numSample:
+            raise ValueError("Invalid yout!")
+        plt.plot(self.tout[1:], np.sqrt(self.eq_diff[1:]))
+        plt.legend([r.reactMeta['id'] for r in self.rsystem.reactionList])
+        plt.show()
+
 if __name__ == '__main__':
     T = 900
     R = 8.314
@@ -357,11 +356,17 @@ if __name__ == '__main__':
     rsystem.buildFromXml("../tests/data/xml/rxns_reversible.xml", concs)
     print("Progress rate: \n", rsystem.getProgressRate(), "\n")
     print("Reaction rate: \n", rsystem.getReactionRate(), "\n")
-    # print("System info: \b", rsystem, "\n")
-    print(rsystem.ode(5))
-    print(rsystem.plot_sys())
-    # print(rsystem.plot_specie(4))
-    print(rsystem.equilibrium())
+    # print("System info: \n", rsystem, "\n")
+
+
+    sim = Simulator(rsystem, 0.1)
+    sim.solveODE()
+    print(sim.eq_point)
+    # sim.plot_specie_all()
+    sim.plot_specie(4)
+    # sim.plot_reaction_all()
+
+
 
 
 

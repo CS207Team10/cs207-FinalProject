@@ -107,7 +107,7 @@ def k_mod_arr(A, b, E, T, R=8.314):
 
     return A * T**b * np.exp(-E / R / T)
 
-def progress_rate(nu_react, nu_prod, k, concs, T, a, reversibleFlagList):
+def progress_rate(nu_react, nu_prod, k, concs, T, a, reversibleFlagList, solvingODE=False):
     """Returns the progress rate of a system elementary reactions (whether reversible or not)
     INPUTS:
     =======
@@ -153,7 +153,7 @@ def progress_rate(nu_react, nu_prod, k, concs, T, a, reversibleFlagList):
         for idx, xi in enumerate(concs):
             nu_ij_r = nu_react[idx,jdx]
             nu_ij_p = nu_prod[idx,jdx]
-            if xi  < 0.0:
+            if not solvingODE and xi  < 0.0:
                 raise ValueError("x{0} = {1:18.16e}:  Negative concentrations are prohibited!".format(idx, xi))
             if nu_ij_r < 0:
                 raise ValueError("nu_{0}{1} = {2}:  Negative stoichiometric coefficients are prohibited!".format(idx, jdx, nu_ij_r))
@@ -206,6 +206,23 @@ def reaction_rate(nu_react, nu_prod, k, concs, T, a, reversibleFlagList):
     nu = nu_prod - nu_react
     rj = progress_rate(nu_react, nu_prod, k, concs, T, a, reversibleFlagList)
     return np.dot(nu, rj)
+
+
+def equilibrium_constant(nu_react, nu_prod, k, T, a, reversibleFlagList):
+    eq_constant = []
+    for jdx, kj in enumerate(k):
+        if kj < 0:
+            raise ValueError("k = {0:18.16e}:  Negative reaction rate coefficients are prohibited!".format(kj))
+
+        # initialize the subtraction part for reversible reaction
+        if reversibleFlagList[jdx] == True:
+            kb = backward_coeffs(kj, nu_prod[:, jdx] - nu_react[:, jdx], T, a)
+            eq_constant.append(kj / kb) # ke
+        else:
+            eq_constant.append(None) # no such constant for irreversible reaction
+
+    return eq_constant
+
 
 
 if __name__ == '__main__':

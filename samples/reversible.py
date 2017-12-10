@@ -10,4 +10,11 @@ rsystem.buildFromXml("../tests/data/xml/rxns_reversible.xml", concs)
 print("Reaction rate: \n", rsystem.getReactionRate(), "\n")
 # print("System info: \n", rsystem, "\n")
 
-    
+
+T = 900.0
+rsystem = ck.ReactionSystem(T, R, "../tests/data/db/nasa.sqlite")
+rsystem.buildFromXml("../tests/data/xml/rxns_reversible.xml", concs)
+# print("Progress rate: \n", rsystem.getProgressRate(), "\n")
+print("Reaction rate: \n", rsystem.getReactionRate(), "\n")
+# print("System info: \n", rsystem, "\n")
+
