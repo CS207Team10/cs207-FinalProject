@@ -76,7 +76,8 @@ def test_rsystem_ode():
     concs = np.array([0.5, 0, 0, 2, 0, 1, 0, 0])
     rsystem = ck.ReactionSystem(900, 8.314, path2+'nasa.sqlite')
     rsystem.buildFromXml(path + "rxns_reversible.xml", concs)
-    assert(len(rsystem.ode(0.3)) == 50) 
+    y = rsystem.ode(0.3)
+    assert(len(y) == 50) 
 
 # Test parse 
 def test_parse_reactionList():
