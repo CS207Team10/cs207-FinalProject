@@ -167,4 +167,7 @@ We will add a new module called ``equilibrium``. It will consist of several new 
 
 To use our new features, the users can first provide the reaction equation, initial concentration for each specie, necessary constants(A, b, E, T, R) and a time t, and then call the concentration change function to compute concentration change for each specie in this reaction, or directly call equilibrium function to see whether the reaction reaches the equilibrium at the given time t.
 
+# equilibrium
+It is oftenly useful to know if the system has reached equilibrium at the end of the simulation at time "t".
+To make such judgements, we 
 
