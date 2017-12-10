@@ -5,17 +5,71 @@
 [![Coverage Status](https://coveralls.io/repos/github/CS207Team10/cs207-FinalProject/badge.svg?branch=master&maxAge=1)](https://coveralls.io/github/CS207Team10/cs207-FinalProject?branch=master)
 
 
+Introduction: Describe what problem the code is solving. You may borrow the Latex expressions from my lecture notes. Discuss in broad strokes what the purpose of the code is along with any features. Do not describe the details of the code yet.
+
+Installation: Tell the user how to install the library. Be thorough here. If there is more than one way to find and use the code, then please clearly discuss each method.
+Suggest a preferred installation method. Tell the user how they can contribute to the development version if they so desire. Tell the user how to run the test suite. Be explicit on any dependencies.
+
+Basic Usage and Examples: Provide a few examples on using your software in some common situations. You may want to show how the code works with a small set of reactions. This is where you would introduce a toy demo problem and show off basic use cases. You would also highlight how to use your new feature here as well. If your code produces output or figures, you may want to include an examples/ directory in your repo so the user can try to reproduce the results in this section.
+
+New Feature: This is where you discuss the final feature. This section should contain the following information:
+Motivation of the new feature.
+Implementation details including any new modules, classes, or methods. I can find the exact implementation in your code base, so your job here is to make sure I can understand why you made certain design decisions and how everything works together.
+
+
 ## Introduction
 
-This program is a chemical kinetics library, which can be used to calculate reaction rate coefficients, progress rate and reaction rate for a given system of chemical reactions. 
+This program is a chemical kinetics library, which could be easily installed by users and used for various applications.
 
-The functionalities include computing 3 different kinds of reaction rate coefficients: Constant reaction rate coefficients, Arrhenius reaction rate coefficients and Modified Arrhenius reaction rate coefficients as specified below. 
+The features include:
+
+ * Constant reaction rate coefficients
+ * Arrhenius reaction rate coefficients
+ * Modified Arrhenius reaction rate coefficients
+ * Progress rate for irreversible and reversible reactions
+ * Reaction rate for irreversible and reversible reactions
+ * Ordinary Differential Equations(ODE) solver for concentrations
+ * Concentration Plot
+ * Equilibrium Check
+ * Web
+ 
+ ### Reaction rate coefficients
+
+The library is able to compute 3 different kinds of reaction rate coefficients: Constant reaction rate coefficients, Arrhenius reaction rate coefficients and Modified Arrhenius reaction rate coefficients as specified below. 
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\begin{align*}&space;k_{\textrm{const}}&space;&=&space;k&space;&&&space;\text{constant}&space;\\&space;k_{\textrm{arr}}&space;&=&space;A&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Arrhenius}&space;\\&space;k_{\textrm{mod&space;arr}}&space;&=&space;A&space;T^{b}&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Modified&space;Arrhenius}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\begin{align*}&space;k_{\textrm{const}}&space;&=&space;k&space;&&&space;\text{constant}&space;\\&space;k_{\textrm{arr}}&space;&=&space;A&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Arrhenius}&space;\\&space;k_{\textrm{mod&space;arr}}&space;&=&space;A&space;T^{b}&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Modified&space;Arrhenius}&space;\end{align*}" title="\begin{align*} k_{\textrm{const}} &= k && \text{constant} \\ k_{\textrm{arr}} &= A \exp\left(-\frac{E}{RT}\right) && \text{Arrhenius} \\ k_{\textrm{mod arr}} &= A T^{b} \exp\left(-\frac{E}{RT}\right) && \text{Modified Arrhenius} \end{align*}" /></a>
 
 Each variable stands for A: Arrhenius prefactor, b: Modified Arrhenius parameter, E: Activation Energy, T: Temperature, and R: Ideal gas constant.
 
+ ### Progress rate for irreversible and reversible reactions
+ 
+ We used the principle of mass action to obtain the progress rate of each reaction.
+ 
+In essence, we assert that the progress rate of a reaction is proportional to the concentrations of the reactants.
+Thus, the forward progress rate is:
+
+ <img src="https://tex.s2cms.ru/svg/r_%7Bj%7D%20%3D%20k_%7Bj%7D%5E%7B(f)%7D%5Cprod_%7Bi%3D1%7D%5E%7BN%7D%7Bx_%7Bi%7D%5E%7B%5Cnu_%7Bij%7D%5E%7B%5Cprime%7D%7D%7D%2C%20%5Cqquad%20j%20%3D%201%2C%5Cldots%2C%20M" alt="r_{j} = k_{j}^{(f)}\prod_{i=1}^{N}{x_{i}^{\nu_{ij}^{\prime}}}, \qquad j = 1,\ldots, M" />
+
+where <img src="https://tex.s2cms.ru/svg/k_%7Bj%7D%5E%7B(f)%7D" alt="k_{j}^{(f)}" /> is the forward reaction rate coefficient.
+
+For irreverisible reactions, the total progress rate is equal to the forward progress rate. But in reality, it is often the case that the products can react and produce the reactants. This is called a reversible reaction.
+
+For reversible reaction, the total progress rate is:
+
+<img src="https://tex.s2cms.ru/svg/r_%7Bj%7D%20%3D%20k_%7Bj%7D%5E%7B%5Cleft(f%5Cright)%7D%5Cprod_%7Bi%3D1%7D%5E%7BN%7D%7Bx_%7Bi%7D%5E%7B%5Cnu_%7Bij%7D%5E%7B%5Cprime%7D%7D%7D%20-%20k_%7Bj%7D%5E%7B%5Cleft(b%5Cright)%7D%5Cprod_%7Bi%3D1%7D%5E%7BN%7D%7Bx_%7Bi%7D%5E%7B%5Cnu_%7Bij%7D%5E%7B%5Cprime%5Cprime%7D%7D%7D%2C%20%5Cqquad%20j%20%3D%201%2C%5Cldots%2C%20M." alt="r_{j} = k_{j}^{\left(f\right)}\prod_{i=1}^{N}{x_{i}^{\nu_{ij}^{\prime}}} - k_{j}^{\left(b\right)}\prod_{i=1}^{N}{x_{i}^{\nu_{ij}^{\prime\prime}}}, \qquad j = 1,\ldots, M." />
+
+where <img src="https://tex.s2cms.ru/svg/k_%7Bj%7D%5E%7B%5Cleft(b%5Cright)%7D" alt="k_{j}^{\left(b\right)}" /> is the backward reaction rate coefficient.
+
+ ### Reaction rate for irreversible and reversible reactions
+ ### Ordinary Differential Equations(ODE) solver for concentrations
+ ### Concentration Plot
+ ### Equilibrium Check
+ ### Web
+
+
+
 Progress rates and reaction rates of both **irreversible** and **reversible** reactions can also be computed by the library. Specifically, for **reversible** function, the total progress rate is coumputed by
+
 <img src="https://github.com/CS207Team10/cs207-FinalProject/blob/master/docs/images/backward.svg">
 
 And we're using the NASA Polynomial Coefficients for computing and entropy and enthalpy change of each reaction.
