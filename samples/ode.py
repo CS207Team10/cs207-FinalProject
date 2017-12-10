@@ -24,3 +24,9 @@ print(yout)
 plt.plot(tout, yout)
 plt.show()
 
+def p(y, kf, kb):
+    rf = kf * y[0]**2 * y[1] #forward reaction rate
+    rb = kb * y[2]**2 #backward reaction rate
+    return rb - rf
+
+print(p(yout[-1], 0.42, 0.17))

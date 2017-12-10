@@ -208,6 +208,9 @@ class ReactionSystem:
         """Plot concentration for all species in the reaction system
        
         """ 
+        if len(self.yout) != 50:
+            raise ValueError("Invalid yout!")
+
         plt.plot(self.tout, self.yout)
         plt.legend(self.species)
         plt.show()
@@ -216,12 +219,14 @@ class ReactionSystem:
         """Plot concentration for one specie in the reaction system
        
         """ 
+        if len(self.yout) != 50:
+            raise ValueError("Invalid yout!")
         out = np.transpose(self.yout)[index]
         plt.plot(self.tout, out, label = self.species[index])
         plt.legend()
         plt.show()
 
-    def equilibrium(self):
+    def equilibrium_graph(self):
         """Check if the reaction system has reached equilibrium
 
 
@@ -235,6 +240,20 @@ class ReactionSystem:
         slope_diff = (self.yout[-1] - self.yout[-2])/(self.tout[-1]/len(self.tout))
         critical_slope = max(self.yout[-1])/(self.tout[-1])*1e-8
         return all(s < critical_slope for s in slope_diff)
+
+    def equilibrium(self):
+        if len(self.yout) != 50:
+            raise ValueError("Invalid yout!")
+        
+        res = []
+        eq_rxn_rate = cp.progress_rate(self.nu_react, self.nu_prod, self.k, self.yout[-1], self.T, self.a, self.reversibleFlagList)
+        for r in eq_rxn_rate:
+            res.append(r==0)
+
+        #print(eq_rxn_rate)
+        #print(self.reversibleFlagList)
+        return res
+
 
     @classmethod
     def parse(cls, inputFile, T, R):
@@ -340,10 +359,10 @@ if __name__ == '__main__':
     print("Progress rate: \n", rsystem.getProgressRate(), "\n")
     print("Reaction rate: \n", rsystem.getReactionRate(), "\n")
     # print("System info: \b", rsystem, "\n")
-    print(len(rsystem.ode(1)))
-    # print(rsystem.plot_sys())
+    print(rsystem.ode(10))
+    print(rsystem.plot_sys())
     # print(rsystem.plot_specie(4))
-    # print(rsystem.equilibrium())
+    print(rsystem.equilibrium())
 
 
 
