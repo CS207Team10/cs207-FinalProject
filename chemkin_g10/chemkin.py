@@ -245,10 +245,9 @@ class ReactionSystem:
         if len(self.yout) != 50:
             raise ValueError("Invalid yout!")
         
-        res = []
+        
         eq_rxn_rate = cp.progress_rate(self.nu_react, self.nu_prod, self.k, self.yout[-1], self.T, self.a, self.reversibleFlagList)
-        for r in eq_rxn_rate:
-            res.append(r==0)
+        res = [ r == 0 for r in eq_rxn_rate]
 
         #print(eq_rxn_rate)
         #print(self.reversibleFlagList)
@@ -359,7 +358,7 @@ if __name__ == '__main__':
     print("Progress rate: \n", rsystem.getProgressRate(), "\n")
     print("Reaction rate: \n", rsystem.getReactionRate(), "\n")
     # print("System info: \b", rsystem, "\n")
-    print(rsystem.ode(10))
+    print(rsystem.ode(5))
     print(rsystem.plot_sys())
     # print(rsystem.plot_specie(4))
     print(rsystem.equilibrium())
