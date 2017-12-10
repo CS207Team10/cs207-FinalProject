@@ -5,6 +5,7 @@ __pycache__/
 .coverage
 .cache
 dist/
+*.egg-info/
 
 ## latex/pdflatex files
 *.aux
