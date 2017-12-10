@@ -232,6 +232,8 @@ To plot concentration for an individual specie, we added function `plot_specie`,
 
 In chemistry, chemical equilibrium is the state in which both reactants and products are present in concentrations which have no further tendency to change with time. Usually, this state results when the forward reaction proceeds at the same rate as the reverse reaction. 
 
+To check equilibrium, we developed two methods. The first method is based on the definition of equilibrium and numerically check whether a reaction reaches equilibrium.
+
 For example, a reversible reaction:
 
 <a href="http://www.codecogs.com/eqnedit.php?latex=$$aA&space;&plus;&space;bB&space;\rightleftharpoons&space;cC&space;&plus;&space;dD$$" target="_blank"><img src="http://latex.codecogs.com/gif.latex?$$aA&space;&plus;&space;bB&space;\rightleftharpoons&space;cC&space;&plus;&space;dD$$" title="$$aA + bB \rightleftharpoons cC + dD$$" /></a>
@@ -244,12 +246,11 @@ When forward progress rate is equal to backward progress rate(the total progress
 
 Since module `computation.py` already has the function to compute total progress rate, we wrote a new function `equilibrium` which can determine whether each reaction has reached equilibrium at time t by simply calling function `progress_rate` and passing the final concentrations for each specie to get the total progress rates. If all the reactions within the system reach zero total progress rates, then the entire reaction system reaches equilibrium. 
 
-We still decided to write the function under the `ReactionSystem` class, since we need the final concentrations to compute the total progress rates. 
+However, in practice, the total progress rate will never be exact zero. Due to the mechanism of dynamic equilibrium, there will always be a tiny difference between forward progress rate and backward progress rate. Thus, we developed another method to check equilibrium.
 
-It is useful to know if the system has reached equilibrium at the end of the simulation at time "t".
-The new feature named "equilibrium" judges if the sytem has reached equilibrium.
-Here, we consider a simulation with time-interval (0,t).
-If the largest concentration among chemical species at time "t" is "C", then the characteristic slope of the c(t) curves can be calculated as "C/t".
-We judge the system to be in equilibrium if all the slopes of the concentrations at the last two time steps are less than the critical slope value "1e-8xC/t".
+By calling funciton `ode`, we perform a simulation with time-interval (0,t). If the largest concentration among chemical species at time t is C, then the characteristic slope of the c(t) curves can be calculated as C/t. We judge the system to be in equilibrium if all the slopes of the concentrations at the last two time steps are less than the critical slope value "1e-8xC/t".
+
+As discussed above, we inplemented two functions `equilibrium_graph` and `equilibrium` under the `ReactionSystem` class, since we need the final concentrations at time t in both functions. 
+
 
 ### Web?
