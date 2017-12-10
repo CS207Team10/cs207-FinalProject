@@ -21,27 +21,35 @@ Implementation details including any new modules, classes, or methods. I can fin
 
 This program is a chemical kinetics library, which could be easily installed by users and used for various applications.
 
-The features include:
+Basic usage includes:
 
- * Constant reaction rate coefficients
- * Arrhenius reaction rate coefficients
- * Modified Arrhenius reaction rate coefficients
+ * Constant reaction rate coefficient
+ * Arrhenius reaction rate coefficient
+ * Modified Arrhenius reaction rate coefficient
+ * Backward reaction rate coefficient
  * Progress rate for irreversible and reversible reactions
- * Reaction rate for irreversible and reversible reactions
- * Ordinary Differential Equations(ODE) solver for concentrations
- * Concentration Plot
- * Equilibrium Check
- * Web
+ * Reaction rate for species
  
  ### Reaction rate coefficients
 
-The library is able to compute 3 different kinds of reaction rate coefficients: Constant reaction rate coefficients, Arrhenius reaction rate coefficients and Modified Arrhenius reaction rate coefficients as specified below. 
+The library is able to compute 4 different kinds of reaction rate coefficient: Constant reaction rate coefficient, Arrhenius reaction rate coefficient, Modified Arrhenius reaction rate coefficient and backward reaction rate coefficient as specified below. 
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\begin{align*}&space;k_{\textrm{const}}&space;&=&space;k&space;&&&space;\text{constant}&space;\\&space;k_{\textrm{arr}}&space;&=&space;A&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Arrhenius}&space;\\&space;k_{\textrm{mod&space;arr}}&space;&=&space;A&space;T^{b}&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Modified&space;Arrhenius}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\begin{align*}&space;k_{\textrm{const}}&space;&=&space;k&space;&&&space;\text{constant}&space;\\&space;k_{\textrm{arr}}&space;&=&space;A&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Arrhenius}&space;\\&space;k_{\textrm{mod&space;arr}}&space;&=&space;A&space;T^{b}&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Modified&space;Arrhenius}&space;\end{align*}" title="\begin{align*} k_{\textrm{const}} &= k && \text{constant} \\ k_{\textrm{arr}} &= A \exp\left(-\frac{E}{RT}\right) && \text{Arrhenius} \\ k_{\textrm{mod arr}} &= A T^{b} \exp\left(-\frac{E}{RT}\right) && \text{Modified Arrhenius} \end{align*}" /></a>
 
 Each variable stands for A: Arrhenius prefactor, b: Modified Arrhenius parameter, E: Activation Energy, T: Temperature, and R: Ideal gas constant.
 
- ### Progress rate for irreversible and reversible reactions
+For an elementary reaction (and only elementary reactions), we have 
+<img src="https://tex.s2cms.ru/svg/k_%7Bj%7D%5E%7B%5Cleft(b%5Cright)%7D%20%3D%20%5Cfrac%7Bk_%7Bj%7D%5E%7B%5Cleft(f%5Cright)%7D%7D%7Bk_%7Bj%7D%5E%7Be%7D%7D%2C%20%5Cqquad%20j%20%3D1%2C%20%5Cldots%2C%20M" alt="k_{j}^{\left(b\right)} = \frac{k_{j}^{\left(f\right)}}{k_{j}^{e}}, \qquad j =1, \ldots, M" />
+    
+where <img src="https://tex.s2cms.ru/svg/k_%7Bj%7D%5E%7Be%7D" alt="k_{j}^{e}" /> is the *equilibrium coefficient* for reaction <img src="https://tex.s2cms.ru/svg/j" alt="j" />.
+The final expression for the equilibrium coefficient is, 
+   
+<img src="https://tex.s2cms.ru/svg/k_%7Bj%7D%5E%7Be%7D%20%3D%20%5Cleft(%5Cfrac%7Bp_%7B0%7D%7D%7BRT%7D%5Cright)%5E%7B%5Cgamma_%7Bj%7D%7D%5Cexp%5Cleft(%5Cfrac%7B%5CDelta%20S_%7Bj%7D%7D%7BR%7D%20-%20%5Cfrac%7B%5CDelta%20H_%7Bj%7D%7D%7BRT%7D%5Cright)%2C%20%5Cqquad%20j%20%3D1%2C%20%5Cldots%2C%20M" alt="k_{j}^{e} = \left(\frac{p_{0}}{RT}\right)^{\gamma_{j}}\exp\left(\frac{\Delta S_{j}}{R} - \frac{\Delta H_{j}}{RT}\right), \qquad j =1, \ldots, M" />
+
+where <img src="https://tex.s2cms.ru/svg/%5Cgamma_%7Bj%7D%20%3D%20%5Csum_%7Bi%3D1%7D%5E%7BN%7D%7B%5Cnu_%7Bij%7D%7D" alt="\gamma_{j} = \sum_{i=1}^{N}{\nu_{ij}}" /> and <img src="https://tex.s2cms.ru/svg/p_%7B0%7D" alt="p_{0}" /> is the pressure of the reactor (take it to be <img src="https://tex.s2cms.ru/svg/10%5E%7B5%7D" alt="10^{5}" /> Pa). <img src="https://tex.s2cms.ru/svg/%5C%5CDelta%20S_%7Bj%7D" alt="\\Delta S_{j}" /> is the entropy change of reaction <img src="https://tex.s2cms.ru/svg/j" alt="j" /> and <img src="https://tex.s2cms.ru/svg/%5C%5CDelta%20H_%7Bj%7D" alt="\\Delta H_{j}" /> the enthalpy change of reaction <img src="https://tex.s2cms.ru/svg/j" alt="j" />.
+
+
+### Progress rate for irreversible and reversible reactions
  
  We used the principle of mass action to obtain the progress rate of each reaction.
  
@@ -60,21 +68,21 @@ For reversible reaction, the total progress rate is:
 
 where <img src="https://tex.s2cms.ru/svg/k_%7Bj%7D%5E%7B%5Cleft(b%5Cright)%7D" alt="k_{j}^{\left(b\right)}" /> is the backward reaction rate coefficient.
 
- ### Reaction rate for irreversible and reversible reactions
- ### Ordinary Differential Equations(ODE) solver for concentrations
- ### Concentration Plot
- ### Equilibrium Check
- ### Web
+ ### Reaction rate for species
+ 
+The reaction rate for each species was given as a linear combination of reaction progress rates.  
+
+That is, 
+
+<img src="https://tex.s2cms.ru/svg/f_%7Bi%7D%5Cleft(%5Cmathbf%7Bx%7D%2C%20T%5Cright)%20%3D%20%5Csum_%7Bj%3D1%7D%5E%7BM%7D%7B%5Cnu_%7Bij%7Dr_%7Bj%7D%7D%2C%20%5Cqquad%20i%20%3D%201%5Cldots%2C%20N" alt="f_{i}\left(\mathbf{x}, T\right) = \sum_{j=1}^{M}{\nu_{ij}r_{j}}, \qquad i = 1\ldots, N" /> 
+   
+where <img src="https://tex.s2cms.ru/svg/%5Cnu_%7Bij%7D%20%3D%20%5Cnu_%7Bij%7D%5E%7B%5Cprime%5Cprime%7D%20-%20%5Cnu_%7Bij%7D%5E%7B%5Cprime%7D" alt="\nu_{ij} = \nu_{ij}^{\prime\prime} - \nu_{ij}^{\prime}" />.
 
 
 
-Progress rates and reaction rates of both **irreversible** and **reversible** reactions can also be computed by the library. Specifically, for **reversible** function, the total progress rate is coumputed by
 
-<img src="https://github.com/CS207Team10/cs207-FinalProject/blob/master/docs/images/backward.svg">
 
-And we're using the NASA Polynomial Coefficients for computing and entropy and enthalpy change of each reaction.
 
-A parse function is also included in our library, which was designed to parse an XML input file provided by users. The function handles inputs by reading in all the needed data and store them for later calculation. 
 
 
 ## Installation
@@ -100,6 +108,8 @@ pytest
 ```
 
 ## Basic Usage and Examples
+
+A parse function is also included in our library, which was designed to parse an XML input file provided by users. The function handles inputs by reading in all the needed data and store them for later calculation. 
 
 Our program includes four separate modules: `chemkin`, `computation`, `db` and `thermo`. 
 
