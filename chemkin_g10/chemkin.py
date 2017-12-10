@@ -340,7 +340,7 @@ if __name__ == '__main__':
     print("Progress rate: \n", rsystem.getProgressRate(), "\n")
     print("Reaction rate: \n", rsystem.getReactionRate(), "\n")
     # print("System info: \b", rsystem, "\n")
-    # print(rsystem.ode(0.3))
+    print(len(rsystem.ode(1)))
     # print(rsystem.plot_sys())
     # print(rsystem.plot_specie(4))
     # print(rsystem.equilibrium())
