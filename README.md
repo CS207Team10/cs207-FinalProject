@@ -5,25 +5,87 @@
 [![Coverage Status](https://coveralls.io/repos/github/CS207Team10/cs207-FinalProject/badge.svg?branch=master&maxAge=1)](https://coveralls.io/github/CS207Team10/cs207-FinalProject?branch=master)
 
 
-## Introduction:
+Introduction: Describe what problem the code is solving. You may borrow the Latex expressions from my lecture notes. Discuss in broad strokes what the purpose of the code is along with any features. Do not describe the details of the code yet.
 
-This program is a chemical kinetics library, which can be used to calculate reaction rate coefficients, progress rate and reaction rate for a given system of chemical reactions. 
+Installation: Tell the user how to install the library. Be thorough here. If there is more than one way to find and use the code, then please clearly discuss each method.
+Suggest a preferred installation method. Tell the user how they can contribute to the development version if they so desire. Tell the user how to run the test suite. Be explicit on any dependencies.
 
-The functionalities include computing 3 different kinds of reaction rate coefficients: Constant reaction rate coefficients, Arrhenius reaction rate coefficients and Modified Arrhenius reaction rate coefficients as specified below. 
+Basic Usage and Examples: Provide a few examples on using your software in some common situations. You may want to show how the code works with a small set of reactions. This is where you would introduce a toy demo problem and show off basic use cases. You would also highlight how to use your new feature here as well. If your code produces output or figures, you may want to include an examples/ directory in your repo so the user can try to reproduce the results in this section.
+
+New Feature: This is where you discuss the final feature. This section should contain the following information:
+Motivation of the new feature.
+Implementation details including any new modules, classes, or methods. I can find the exact implementation in your code base, so your job here is to make sure I can understand why you made certain design decisions and how everything works together.
+
+
+## Introduction
+
+This program is a chemical kinetics library, which could be easily installed by users and used for various applications.
+
+Basic usage includes:
+
+ * Constant reaction rate coefficient
+ * Arrhenius reaction rate coefficient
+ * Modified Arrhenius reaction rate coefficient
+ * Backward reaction rate coefficient
+ * Progress rate for irreversible and reversible reactions
+ * Reaction rate for species
+ 
+ ### Reaction rate coefficients
+
+The library is able to compute 4 different kinds of reaction rate coefficient: Constant reaction rate coefficient, Arrhenius reaction rate coefficient, Modified Arrhenius reaction rate coefficient and backward reaction rate coefficient as specified below. 
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\begin{align*}&space;k_{\textrm{const}}&space;&=&space;k&space;&&&space;\text{constant}&space;\\&space;k_{\textrm{arr}}&space;&=&space;A&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Arrhenius}&space;\\&space;k_{\textrm{mod&space;arr}}&space;&=&space;A&space;T^{b}&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Modified&space;Arrhenius}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\begin{align*}&space;k_{\textrm{const}}&space;&=&space;k&space;&&&space;\text{constant}&space;\\&space;k_{\textrm{arr}}&space;&=&space;A&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Arrhenius}&space;\\&space;k_{\textrm{mod&space;arr}}&space;&=&space;A&space;T^{b}&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Modified&space;Arrhenius}&space;\end{align*}" title="\begin{align*} k_{\textrm{const}} &= k && \text{constant} \\ k_{\textrm{arr}} &= A \exp\left(-\frac{E}{RT}\right) && \text{Arrhenius} \\ k_{\textrm{mod arr}} &= A T^{b} \exp\left(-\frac{E}{RT}\right) && \text{Modified Arrhenius} \end{align*}" /></a>
 
 Each variable stands for A: Arrhenius prefactor, b: Modified Arrhenius parameter, E: Activation Energy, T: Temperature, and R: Ideal gas constant.
 
-Progress rates and reaction rates of both **irreversible** and **reversible** reactions can also be computed by the library. Specifically, for **reversible** function, the total progress rate is coumputed by
-<img src="https://github.com/CS207Team10/cs207-FinalProject/blob/master/docs/images/backward.svg">
+For an elementary reaction, we have 
+<img src="https://tex.s2cms.ru/svg/k_%7Bj%7D%5E%7B%5Cleft(b%5Cright)%7D%20%3D%20%5Cfrac%7Bk_%7Bj%7D%5E%7B%5Cleft(f%5Cright)%7D%7D%7Bk_%7Bj%7D%5E%7Be%7D%7D%2C%20%5Cqquad%20j%20%3D1%2C%20%5Cldots%2C%20M" alt="k_{j}^{\left(b\right)} = \frac{k_{j}^{\left(f\right)}}{k_{j}^{e}}, \qquad j =1, \ldots, M" />
+    
+where <img src="https://tex.s2cms.ru/svg/k_%7Bj%7D%5E%7Be%7D" alt="k_{j}^{e}" /> is the *equilibrium coefficient* for reaction <img src="https://tex.s2cms.ru/svg/j" alt="j" />.
+The final expression for the equilibrium coefficient is, 
+   
+<img src="https://tex.s2cms.ru/svg/k_%7Bj%7D%5E%7Be%7D%20%3D%20%5Cleft(%5Cfrac%7Bp_%7B0%7D%7D%7BRT%7D%5Cright)%5E%7B%5Cgamma_%7Bj%7D%7D%5Cexp%5Cleft(%5Cfrac%7B%5CDelta%20S_%7Bj%7D%7D%7BR%7D%20-%20%5Cfrac%7B%5CDelta%20H_%7Bj%7D%7D%7BRT%7D%5Cright)%2C%20%5Cqquad%20j%20%3D1%2C%20%5Cldots%2C%20M" alt="k_{j}^{e} = \left(\frac{p_{0}}{RT}\right)^{\gamma_{j}}\exp\left(\frac{\Delta S_{j}}{R} - \frac{\Delta H_{j}}{RT}\right), \qquad j =1, \ldots, M" />
 
-And we're using the NASA Polynomial Coefficients for computing and entropy and enthalpy change of each reaction.
-
-A parse function is also included in our library, which was designed to parse an XML input file provided by users. The function handles inputs by reading in all the needed data and store them for later calculation. 
+where <img src="https://tex.s2cms.ru/svg/%5Cgamma_%7Bj%7D%20%3D%20%5Csum_%7Bi%3D1%7D%5E%7BN%7D%7B%5Cnu_%7Bij%7D%7D" alt="\gamma_{j} = \sum_{i=1}^{N}{\nu_{ij}}" /> and <img src="https://tex.s2cms.ru/svg/p_%7B0%7D" alt="p_{0}" /> is the pressure of the reactor (take it to be <img src="https://tex.s2cms.ru/svg/10%5E%7B5%7D" alt="10^{5}" /> Pa). <img src="https://tex.s2cms.ru/svg/%5CDelta%20S_%7Bj%7D" alt="\Delta S_{j}" /> is the entropy change of reaction <img src="https://tex.s2cms.ru/svg/j" alt="j" /> and <img src="https://tex.s2cms.ru/svg/%5CDelta%20H_%7Bj%7D" alt="\Delta H_{j}" /> the enthalpy change of reaction <img src="https://tex.s2cms.ru/svg/j" alt="j" />.
 
 
-## Installation:
+### Progress rate for irreversible and reversible reactions
+ 
+ We used the principle of mass action to obtain the progress rate of each reaction.
+ 
+In essence, we assert that the progress rate of a reaction is proportional to the concentrations of the reactants.
+Thus, the forward progress rate is:
+
+ <img src="https://tex.s2cms.ru/svg/r_%7Bj%7D%20%3D%20k_%7Bj%7D%5E%7B(f)%7D%5Cprod_%7Bi%3D1%7D%5E%7BN%7D%7Bx_%7Bi%7D%5E%7B%5Cnu_%7Bij%7D%5E%7B%5Cprime%7D%7D%7D%2C%20%5Cqquad%20j%20%3D%201%2C%5Cldots%2C%20M" alt="r_{j} = k_{j}^{(f)}\prod_{i=1}^{N}{x_{i}^{\nu_{ij}^{\prime}}}, \qquad j = 1,\ldots, M" />
+
+where <img src="https://tex.s2cms.ru/svg/k_%7Bj%7D%5E%7B(f)%7D" alt="k_{j}^{(f)}" /> is the forward reaction rate coefficient.
+
+For irreverisible reactions, the total progress rate is equal to the forward progress rate. But in reality, it is often the case that the products can react and produce the reactants. This is called a reversible reaction.
+
+For reversible reaction, the total progress rate is:
+
+<img src="https://tex.s2cms.ru/svg/r_%7Bj%7D%20%3D%20k_%7Bj%7D%5E%7B%5Cleft(f%5Cright)%7D%5Cprod_%7Bi%3D1%7D%5E%7BN%7D%7Bx_%7Bi%7D%5E%7B%5Cnu_%7Bij%7D%5E%7B%5Cprime%7D%7D%7D%20-%20k_%7Bj%7D%5E%7B%5Cleft(b%5Cright)%7D%5Cprod_%7Bi%3D1%7D%5E%7BN%7D%7Bx_%7Bi%7D%5E%7B%5Cnu_%7Bij%7D%5E%7B%5Cprime%5Cprime%7D%7D%7D%2C%20%5Cqquad%20j%20%3D%201%2C%5Cldots%2C%20M." alt="r_{j} = k_{j}^{\left(f\right)}\prod_{i=1}^{N}{x_{i}^{\nu_{ij}^{\prime}}} - k_{j}^{\left(b\right)}\prod_{i=1}^{N}{x_{i}^{\nu_{ij}^{\prime\prime}}}, \qquad j = 1,\ldots, M." />
+
+where <img src="https://tex.s2cms.ru/svg/k_%7Bj%7D%5E%7B%5Cleft(b%5Cright)%7D" alt="k_{j}^{\left(b\right)}" /> is the backward reaction rate coefficient.
+
+ ### Reaction rate for species
+ 
+The reaction rate for each species was given as a linear combination of reaction progress rates.  
+
+That is, 
+
+<img src="https://tex.s2cms.ru/svg/f_%7Bi%7D%5Cleft(%5Cmathbf%7Bx%7D%2C%20T%5Cright)%20%3D%20%5Csum_%7Bj%3D1%7D%5E%7BM%7D%7B%5Cnu_%7Bij%7Dr_%7Bj%7D%7D%2C%20%5Cqquad%20i%20%3D%201%5Cldots%2C%20N" alt="f_{i}\left(\mathbf{x}, T\right) = \sum_{j=1}^{M}{\nu_{ij}r_{j}}, \qquad i = 1\ldots, N" /> 
+   
+where <img src="https://tex.s2cms.ru/svg/%5Cnu_%7Bij%7D%20%3D%20%5Cnu_%7Bij%7D%5E%7B%5Cprime%5Cprime%7D%20-%20%5Cnu_%7Bij%7D%5E%7B%5Cprime%7D" alt="\nu_{ij} = \nu_{ij}^{\prime\prime} - \nu_{ij}^{\prime}" />.
+
+
+
+
+
+
+
+
+## Installation
 
 All the classes and functions necessary to run the library were stored in chemkin_g10. All the tests were stored in tests folder. 
 
@@ -45,7 +107,9 @@ To run our test program, simply run
 pytest
 ```
 
-## Basic Usage and Examples: 
+## Basic Usage and Examples
+
+A parse function is also included in our library, which was designed to parse an XML input file provided by users. The function handles inputs by reading in all the needed data and store them for later calculation. 
 
 Our program includes four separate modules: `chemkin`, `computation`, `db` and `thermo`. 
 
@@ -136,19 +200,39 @@ print("System info: \b", rsystem, "\n")
    rsystem.buildFromList(rsystem.reactionList)
    ```
 
-## Proposed Feature
+## New Feature
+
+### ODE Solver
 
 Based on Le Chatelier's principle, changing the concentration of a chemical will have an effect to the reaction equilibrium. Thus, the reaction rate, extent, and yield of products will be altered corresponding to the impact on the system. 
 
 For irreversible reactions, users may want to know the progress of the reaction by checking the concentration for each reactant and product. For reversible reactions, users may also want to check the concentration for each specie, in order to determine whether the reaction has reached the equilibrium. 
 
-First, our team plan to add a new feature to compute the concentration change for each specie after a time interval which will be provided by users. Since the concentration change of specie i is determined by the ODE: 
+Thus, we added a new feature to compute the concentration for each specie at each time stamp between time interval (0,t), and t will be entered by users. 
+
+To implement this feature, we first added a new function `dydt` under the module `chemkin.py` and the class `ReactionSystem` by rewriting our reaction rate function. It will take an array of concentrations and a time stamp t as parameters. Then we added a new function `ode`, which includes `odeint` funciton from library `scipy` to integrate reaction rates and then get concentrations for each specie at time t. 
+
+The formula of reaction rate for each specie is specified below:
 
 <a href="http://www.codecogs.com/eqnedit.php?latex=$$\frac{\mathrm{d}x_{i}}{\mathrm{d}t}&space;=&space;f_{i}\left(\mathrm{x},&space;T\right),&space;\qquad&space;i&space;=&space;1,&space;\ldots,&space;N.$$" target="_blank"><img src="http://latex.codecogs.com/gif.latex?$$\frac{\mathrm{d}x_{i}}{\mathrm{d}t}&space;=&space;f_{i}\left(\mathrm{x},&space;T\right),&space;\qquad&space;i&space;=&space;1,&space;\ldots,&space;N.$$" title="$$\frac{\mathrm{d}x_{i}}{\mathrm{d}t} = f_{i}\left(\mathrm{x}, T\right), \qquad i = 1, \ldots, N.$$" /></a>
 
-and we already had the feature to compute the reaction rates, we can easily get the concentration change for each specie after a given time interval by intergrating the reaction rates by time.
+By calling function `ode(t)`, users will get an array of concentrations with length 50, which represents the concentrations at each t/50 time stamp. The last array of concentrations is the final concentrations for each specie at time t.
 
-Second, we also plan to add a new feature to determine whether a reversible reaction has reached its equilibrium. In chemistry, chemical equilibrium is the state in which both reactants and products are present in concentrations which have no further tendency to change with time. Usually, this state results when the forward reaction proceeds at the same rate as the reverse reaction. 
+### Plot
+
+It is always helpful for users to see how concentrations change over time graphically. Therefore, we added plot functions to visualize concentration change and we used `matplotlib` library to plot graphs.
+
+We still added our functions under the `ReactionSystem` class for it has all the variables we need to plot concentrations.
+
+To plot concentrations for the entire reaction system, we added function `plot_sys`, which will plot the resulting concentrations returned by function `ode` in the Y axis and time interval (0, t) in the X axis.
+
+To plot concentration for an individual specie, we added function `plot_specie`, which will take an integer as parameter to specify which specie to plot. 
+
+### equilibrium
+
+In chemistry, chemical equilibrium is the state in which both reactants and products are present in concentrations which have no further tendency to change with time. Usually, this state results when the forward reaction proceeds at the same rate as the reverse reaction. 
+
+To check equilibrium, we developed two methods. The first method is based on the definition of equilibrium and numerically check whether a reaction reaches equilibrium.
 
 For example, a reversible reaction:
 
@@ -156,21 +240,17 @@ For example, a reversible reaction:
 
 <a href="http://www.codecogs.com/eqnedit.php?latex=$$\text{forward&space;progress&space;rate&space;=&space;}k^f&space;[A]^a[B]^b$$&space;\newline&space;$$\text{backward&space;progress&space;rate&space;=&space;}k^b&space;[C]^c[D]^d$$" target="_blank"><img src="http://latex.codecogs.com/gif.latex?$$\text{forward&space;progress&space;rate&space;=&space;}k^f&space;[A]^a[B]^b$$&space;\newline&space;$$&space\text{backward&space;progress&space;rate&space;=&space;}k^b&space;[C]^c[D]^d$$" title="$$\text{forward progress rate = }k^f [A]^a[B]^b$$ \newline $$\text{backward progress rate = }k^b [C]^c[D]^d$$" /></a>
 
-When forward progress rate is equal to backward progress rate, the reaction reaches the equilibrium:
+When forward progress rate is equal to backward progress rate(the total progress rate = 0), the reaction reaches the equilibrium:
 
 <a href="http://www.codecogs.com/eqnedit.php?latex=$$k^f&space;[A]^a[B]^b&space;=&space;k^b&space;[C]^c[D]^d$$" target="_blank"><img src="http://latex.codecogs.com/gif.latex?$$k^f&space;[A]^a[B]^b&space;=&space;k^b&space;[C]^c[D]^d$$" title="$$k^f [A]^a[B]^b = k^b [C]^c[D]^d$$" /></a>
 
+Since module `computation.py` already has the function to compute total progress rate, we wrote a new function `equilibrium` which can determine whether each reaction has reached equilibrium at time t by simply calling function `progress_rate` and passing the final concentrations for each specie to get the total progress rates. If all the reactions within the system reach zero total progress rates, then the entire reaction system reaches equilibrium. 
 
-Since our module already has the functions to compute forward reaction rate coefficient and backward reaction rate coefficient, if the users provide a time t, we can determine whether the reaction has reached equilibrium by first calculating the concentration for each specie at that time and then comparing the forward progress rate and the backward progress rate.
+However, in practice, the total progress rate will never be exact zero. Due to the mechanism of dynamic equilibrium, there will always be a tiny difference between forward progress rate and backward progress rate. Thus, we developed another method to check equilibrium.
 
-We will add a new module called ``equilibrium``. It will consist of several new methods, including one method to compute concentration change, which will take a time t as an input parameter, one method to determine equilibrium, and probably some other helper methods.
+By calling funciton `ode`, we perform a simulation with time-interval (0,t). If the largest concentration among chemical species at time t is C, then the characteristic slope of the c(t) curves can be calculated as C/t. We judge the system to be in equilibrium if all the slopes of the concentrations at the last two time steps are less than the critical slope value "1e-8xC/t".
 
-To use our new features, the users can first provide the reaction equation, initial concentration for each specie, necessary constants(A, b, E, T, R) and a time t, and then call the concentration change function to compute concentration change for each specie in this reaction, or directly call equilibrium function to see whether the reaction reaches the equilibrium at the given time t.
+As discussed above, we inplemented two functions `equilibrium_graph` and `equilibrium` under the `ReactionSystem` class, since we need the final concentrations at time t in both functions. 
 
-### equilibrium
-It is useful to know if the system has reached equilibrium at the end of the simulation at time "t".
-The new feature named "equilibrium" judges if the sytem has reached equilibrium.
-Here, we consider a simulation with time-interval (0,t).
-If the largest concentration among chemical species at time "t" is "C", then the characteristic slope of the c(t) curves can be calculated as "C/t".
-We judge the system to be in equilibrium if all the slopes of the concentrations at the last two time steps are less than the critical slope value "1e-8xC/t".
 
+### Web?
