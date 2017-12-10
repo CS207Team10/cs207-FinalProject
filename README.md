@@ -38,7 +38,7 @@ The library is able to compute 4 different kinds of reaction rate coefficient: C
 
 Each variable stands for A: Arrhenius prefactor, b: Modified Arrhenius parameter, E: Activation Energy, T: Temperature, and R: Ideal gas constant.
 
-For an elementary reaction (and only elementary reactions), we have 
+For an elementary reaction, we have 
 <img src="https://tex.s2cms.ru/svg/k_%7Bj%7D%5E%7B%5Cleft(b%5Cright)%7D%20%3D%20%5Cfrac%7Bk_%7Bj%7D%5E%7B%5Cleft(f%5Cright)%7D%7D%7Bk_%7Bj%7D%5E%7Be%7D%7D%2C%20%5Cqquad%20j%20%3D1%2C%20%5Cldots%2C%20M" alt="k_{j}^{\left(b\right)} = \frac{k_{j}^{\left(f\right)}}{k_{j}^{e}}, \qquad j =1, \ldots, M" />
     
 where <img src="https://tex.s2cms.ru/svg/k_%7Bj%7D%5E%7Be%7D" alt="k_{j}^{e}" /> is the *equilibrium coefficient* for reaction <img src="https://tex.s2cms.ru/svg/j" alt="j" />.
@@ -46,7 +46,7 @@ The final expression for the equilibrium coefficient is,
    
 <img src="https://tex.s2cms.ru/svg/k_%7Bj%7D%5E%7Be%7D%20%3D%20%5Cleft(%5Cfrac%7Bp_%7B0%7D%7D%7BRT%7D%5Cright)%5E%7B%5Cgamma_%7Bj%7D%7D%5Cexp%5Cleft(%5Cfrac%7B%5CDelta%20S_%7Bj%7D%7D%7BR%7D%20-%20%5Cfrac%7B%5CDelta%20H_%7Bj%7D%7D%7BRT%7D%5Cright)%2C%20%5Cqquad%20j%20%3D1%2C%20%5Cldots%2C%20M" alt="k_{j}^{e} = \left(\frac{p_{0}}{RT}\right)^{\gamma_{j}}\exp\left(\frac{\Delta S_{j}}{R} - \frac{\Delta H_{j}}{RT}\right), \qquad j =1, \ldots, M" />
 
-where <img src="https://tex.s2cms.ru/svg/%5Cgamma_%7Bj%7D%20%3D%20%5Csum_%7Bi%3D1%7D%5E%7BN%7D%7B%5Cnu_%7Bij%7D%7D" alt="\gamma_{j} = \sum_{i=1}^{N}{\nu_{ij}}" /> and <img src="https://tex.s2cms.ru/svg/p_%7B0%7D" alt="p_{0}" /> is the pressure of the reactor (take it to be <img src="https://tex.s2cms.ru/svg/10%5E%7B5%7D" alt="10^{5}" /> Pa). <img src="https://tex.s2cms.ru/svg/%5C%5CDelta%20S_%7Bj%7D" alt="\\Delta S_{j}" /> is the entropy change of reaction <img src="https://tex.s2cms.ru/svg/j" alt="j" /> and <img src="https://tex.s2cms.ru/svg/%5C%5CDelta%20H_%7Bj%7D" alt="\\Delta H_{j}" /> the enthalpy change of reaction <img src="https://tex.s2cms.ru/svg/j" alt="j" />.
+where <img src="https://tex.s2cms.ru/svg/%5Cgamma_%7Bj%7D%20%3D%20%5Csum_%7Bi%3D1%7D%5E%7BN%7D%7B%5Cnu_%7Bij%7D%7D" alt="\gamma_{j} = \sum_{i=1}^{N}{\nu_{ij}}" /> and <img src="https://tex.s2cms.ru/svg/p_%7B0%7D" alt="p_{0}" /> is the pressure of the reactor (take it to be <img src="https://tex.s2cms.ru/svg/10%5E%7B5%7D" alt="10^{5}" /> Pa). <img src="https://tex.s2cms.ru/svg/%5CDelta%20S_%7Bj%7D" alt="\Delta S_{j}" /> is the entropy change of reaction <img src="https://tex.s2cms.ru/svg/j" alt="j" /> and <img src="https://tex.s2cms.ru/svg/%5CDelta%20H_%7Bj%7D" alt="\Delta H_{j}" /> the enthalpy change of reaction <img src="https://tex.s2cms.ru/svg/j" alt="j" />.
 
 
 ### Progress rate for irreversible and reversible reactions
