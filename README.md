@@ -1,9 +1,8 @@
-# cs207 Team 10 Final Project: Chemical Kinetics library
-
 [![Build Status](https://travis-ci.org/CS207Team10/cs207-FinalProject.svg?branch=master)](https://travis-ci.org/CS207Team10/cs207-FinalProject)
 
 [![Coverage Status](https://coveralls.io/repos/github/CS207Team10/cs207-FinalProject/badge.svg?branch=master&maxAge=1)](https://coveralls.io/github/CS207Team10/cs207-FinalProject?branch=master)
 
+# cs207 Team 10 Final Project: Chemical Kinetics library
 
 Introduction: Describe what problem the code is solving. You may borrow the Latex expressions from my lecture notes. Discuss in broad strokes what the purpose of the code is along with any features. Do not describe the details of the code yet.
 
@@ -202,6 +201,15 @@ print("System info: \b", rsystem, "\n")
 
 ## New Feature
 
+We implemented a new class `Simulator` under the `chemkin.py` module. The class includes an ODE solver function, two equilibrium check functions and three plot functions.
+
+To initialize a `Simulator` object, users should pass in a `ReactionSystem` object, a time stamp, a number of integration time steps(default = 100), a time scale(default = 1e9) and an equilibrium threshold(default = 1e-05). 
+
+For example:
+```
+sim = Simulator(rsystem, 0.1, numSample=100, timeScale=1e9, eqThreshold=1e-05)
+```
+
 ### ODE Solver
 
 Based on Le Chatelier's principle, changing the concentration of a chemical will have an effect to the reaction equilibrium. Thus, the reaction rate, extent, and yield of products will be altered corresponding to the impact on the system. 
@@ -210,13 +218,76 @@ For irreversible reactions, users may want to know the progress of the reaction 
 
 Thus, we added a new feature to compute the concentration for each specie at each time stamp between time interval (0,t), and t will be entered by users. 
 
-To implement this feature, we first added a new function `dydt` under the module `chemkin.py` and the class `ReactionSystem` by rewriting our reaction rate function. It will take an array of concentrations and a time stamp t as parameters. Then we added a new function `ode`, which includes `odeint` funciton from library `scipy` to integrate reaction rates and then get concentrations for each specie at time t. 
+To implement this feature, we added a new function `solveODE` under the `Simulator` class. It has a nested function `fun`, which is to compute reaction rates. Then we used `odeint` function from library `scipy` to integrate reaction rates and then get concentrations for each specie at each time stamp. 
 
 The formula of reaction rate for each specie is specified below:
 
 <a href="http://www.codecogs.com/eqnedit.php?latex=$$\frac{\mathrm{d}x_{i}}{\mathrm{d}t}&space;=&space;f_{i}\left(\mathrm{x},&space;T\right),&space;\qquad&space;i&space;=&space;1,&space;\ldots,&space;N.$$" target="_blank"><img src="http://latex.codecogs.com/gif.latex?$$\frac{\mathrm{d}x_{i}}{\mathrm{d}t}&space;=&space;f_{i}\left(\mathrm{x},&space;T\right),&space;\qquad&space;i&space;=&space;1,&space;\ldots,&space;N.$$" title="$$\frac{\mathrm{d}x_{i}}{\mathrm{d}t} = f_{i}\left(\mathrm{x}, T\right), \qquad i = 1, \ldots, N.$$" /></a>
 
-By calling function `ode(t)`, users will get an array of concentrations with length 50, which represents the concentrations at each t/50 time stamp. The last array of concentrations is the final concentrations for each specie at time t.
+To use this function, users can simply call:
+
+```
+sim.solveODE()
+```
+
+Users can also get all the concentrations at each time stamp by calling the following methods:
+
+```
+print(sim.yout)
+```
+
+The last array of concentrations is the final concentrations for each specie at time t.
+
+### equilibrium
+
+In chemistry, chemical equilibrium is the state in which both reactants and products are present in concentrations which have no further tendency to change with time. Usually, this state results when the forward reaction proceeds at the same rate as the reverse reaction. 
+
+To check equilibrium, we developed two methods. The first method is based on the definition of equilibrium and compare reaction quotient with equilibrium constants.
+
+For example, a reversible reaction:
+
+<a href="http://www.codecogs.com/eqnedit.php?latex=$$aA&space;&plus;&space;bB&space;\rightleftharpoons&space;cC&space;&plus;&space;dD$$" target="_blank"><img src="http://latex.codecogs.com/gif.latex?$$aA&space;&plus;&space;bB&space;\rightleftharpoons&space;cC&space;&plus;&space;dD$$" title="$$aA + bB \rightleftharpoons cC + dD$$" /></a>
+
+The equation for reaction quotient is written by multiplying the concentrations for the species of the products and dividing by the concentrations of the reactants. If any component in the reaction has a coefficient, indicated above with lower case letters, the concentration is raised to the power of the coefficient. The above equation is therefore: 
+
+<img src="https://tex.s2cms.ru/svg/Qc%3D%5Cfrac%7B%5BC%5D%5E%7Bc%7D%5BD%5D%5E%7Bd%7D%7D%7B%5BA%5D%5Ea%5BB%5D%5Eb%7D" alt="Qc=\frac{[C]^{c}[D]^{d}}{[A]^a[B]^b}" />
+
+A comparison of reaction quotient(Q) with equilibrium constant(K) indicates which way the reaction shifts and which side of the reaction is favored:
+
+* If  Q>K, then the reaction favors the reactants. 
+* If  Q<K, then the reaction favors the products. 
+* If  Q=K, then the reaction is already at equilibrium. There is no tendency to form more reactants or more products at this point. No side is favored and no shift occurs.
+
+First, we added a new function `equilibrium_constant` under the `computation.py` module to compute the equilibrium constant(k) for each reaction.
+
+Then, in the `solveODE` function, after calling `odeint` to integrate concentrations, we computed the reaction quotients for each reaction, and compare the reaction quotients with the equilibrium constants by computing the following percentage:
+
+<img src="https://tex.s2cms.ru/svg/%5Cfrac%7B%5Ctext%7Breaction%20quotient%7D%20-%20%5Ctext%7Bequilibrium%20constant%7D%7D%7B%5Ctext%7Bequilibrium%20constant%7D%7D" alt="\frac{\text{reaction quotient} - \text{equilibrium constant}}{\text{equilibrium constant}}" />
+
+If the percentage is less than the equilibrium threshold, then we consider the reaction has reached equilibrium. 
+
+For each reaction, we found the first time stamp that the reaction reaches equilibrium and stored them into an array for future use.
+
+Users can simply call the following methods to see the equilibrium time stamp for each reaction:
+```
+print(sim.eq_point)
+```
+
+Users may also want to check equilibrium with arbitrary time stamp, so we added a new function `check_equilibrium` which takes an index and a time stamp as parameters. By specifying index and time stamp, users can check equilibrium for a specific reaction at a specific time stamp. The function will simply compare this time stamp with the first equilibrium time stamp for that reaction and determine whether the reaction has reached equilibrium.
+
+An example of checking equilibrium for reaction 5 at time stamp 57:
+```
+print(sim.check_equilibrium(5, 57))
+```
+
+Furthermore, we came up with another method to check equilibrium, which was developed based on slopes of concentration plots.
+
+If the largest concentration among chemical species at time t is C, then the characteristic slope of the c(t) curves can be calculated as C/t. We judge the system to be in equilibrium if all the slopes of the concentrations at the last two time steps are less than the critical slope value "1e-9*C/t". The choice of "1e-9" is our definition of equilibrium and the number could be changed to another small number.
+
+Example:
+```
+print(sim.equilibrium_graph())
+```
 
 ### Plot
 
@@ -228,29 +299,7 @@ To plot concentrations for the entire reaction system, we added function `plot_s
 
 To plot concentration for an individual specie, we added function `plot_specie`, which will take an integer as parameter to specify which specie to plot. 
 
-### equilibrium
 
-In chemistry, chemical equilibrium is the state in which both reactants and products are present in concentrations which have no further tendency to change with time. Usually, this state results when the forward reaction proceeds at the same rate as the reverse reaction. 
-
-To check equilibrium, we developed two methods. The first method is based on the definition of equilibrium and numerically check whether a reaction reaches equilibrium.
-
-For example, a reversible reaction:
-
-<a href="http://www.codecogs.com/eqnedit.php?latex=$$aA&space;&plus;&space;bB&space;\rightleftharpoons&space;cC&space;&plus;&space;dD$$" target="_blank"><img src="http://latex.codecogs.com/gif.latex?$$aA&space;&plus;&space;bB&space;\rightleftharpoons&space;cC&space;&plus;&space;dD$$" title="$$aA + bB \rightleftharpoons cC + dD$$" /></a>
-
-<a href="http://www.codecogs.com/eqnedit.php?latex=$$\text{forward&space;progress&space;rate&space;=&space;}k^f&space;[A]^a[B]^b$$&space;\newline&space;$$\text{backward&space;progress&space;rate&space;=&space;}k^b&space;[C]^c[D]^d$$" target="_blank"><img src="http://latex.codecogs.com/gif.latex?$$\text{forward&space;progress&space;rate&space;=&space;}k^f&space;[A]^a[B]^b$$&space;\newline&space;$$&space\text{backward&space;progress&space;rate&space;=&space;}k^b&space;[C]^c[D]^d$$" title="$$\text{forward progress rate = }k^f [A]^a[B]^b$$ \newline $$\text{backward progress rate = }k^b [C]^c[D]^d$$" /></a>
-
-When forward progress rate is equal to backward progress rate(the total progress rate = 0), the reaction reaches the equilibrium:
-
-<a href="http://www.codecogs.com/eqnedit.php?latex=$$k^f&space;[A]^a[B]^b&space;=&space;k^b&space;[C]^c[D]^d$$" target="_blank"><img src="http://latex.codecogs.com/gif.latex?$$k^f&space;[A]^a[B]^b&space;=&space;k^b&space;[C]^c[D]^d$$" title="$$k^f [A]^a[B]^b = k^b [C]^c[D]^d$$" /></a>
-
-Since module `computation.py` already has the function to compute total progress rate, we wrote a new function `equilibrium` which can determine whether each reaction has reached equilibrium at time t by simply calling function `progress_rate` and passing the final concentrations for each specie to get the total progress rates. If all the reactions within the system reach zero total progress rates, then the entire reaction system reaches equilibrium. 
-
-However, in practice, the total progress rate will never be exact zero. Due to the mechanism of dynamic equilibrium, there will always be a tiny difference between forward progress rate and backward progress rate. Thus, we developed another method to check equilibrium.
-
-By calling funciton `ode`, we perform a simulation with time-interval (0,t). If the largest concentration among chemical species at time t is C, then the characteristic slope of the c(t) curves can be calculated as C/t. We judge the system to be in equilibrium if all the slopes of the concentrations at the last two time steps are less than the critical slope value "1e-8xC/t".
-
-As discussed above, we inplemented two functions `equilibrium_graph` and `equilibrium` under the `ReactionSystem` class, since we need the final concentrations at time t in both functions. 
 
 
 ### Web?
