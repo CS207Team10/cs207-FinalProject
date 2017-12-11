@@ -307,14 +307,14 @@ print(sim.eq_point)
 ```
 
 ```
-[34, 67, 68, 62, 66, 58, 58, 64, 54, 65, 56]
+[3.4343434343434346e-11, 6.7676767676767674e-11, 6.8686868686868691e-11, 6.2626262626262625e-11, 6.6666666666666669e-11, 5.858585858585858e-11, 5.858585858585858e-11, 6.4646464646464647e-11, 5.4545454545454549e-11, 6.5656565656565652e-11, 5.6565656565656564e-11]
 ```
 
 Users may also want to check equilibrium with arbitrary time stamp, so we added a new function `check_equilibrium` which takes an index and a time stamp as parameters. By specifying index and time stamp, users can check equilibrium for a specific reaction at a specific time stamp. The function will simply compare this time stamp with the first equilibrium time stamp for that reaction and determine whether the reaction has reached equilibrium.
 
-An example of checking equilibrium for reaction 5 at time stamp 57:
+An example of checking equilibrium for reaction 5 at time 5e-11(5e-11 is less than 5.858585858585858e-11, so it has not reached equilibrium):
 ```
-print(sim.check_equilibrium(5, 57))
+print(sim.check_equilibrium(5, 5e-11))
 ```
 
 ```
