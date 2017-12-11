@@ -4,6 +4,8 @@ import chemkin_g10.computation as cp
 from chemkin_g10.db import DatabaseOps as dbops
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
+import requests
+import json
 
 class Reaction:
     """The class that represent a single Reaction
@@ -134,6 +136,7 @@ class ReactionSystem:
         if len(species) != len(concs):
             raise ValueError("Size of concentration does not match to number of species!")
 
+        self.inputFile = inputFile
         self.reactionList = reactionList
         self.species = species
         self.concs = concs
@@ -242,7 +245,6 @@ class ReactionSystem:
             reactionList.append(reaction)
 
         return reactionList, species
-
 
     def __str__(self):
         res = "\n"
@@ -398,6 +400,20 @@ class Simulator:
         plt.legend([r.reactMeta['id'] for r in self.rsystem.reactionList])
         plt.show(block=False)
 
+
+    def visualize(self):
+        """Return a link to visualize the system in the web front-end (website is local currently)
+        """
+        url_local = "http://127.0.0.1:8000/visualization/viz/"
+        files = {'file': open(self.rsystem.inputFile, 'rb')}
+        r = requests.post(url_local, data = {'T':self.rsystem.T, 'concs':json.dumps(self.rsystem.concs.tolist())}, files=files)
+        # print(r.text)
+        url_viz = "http://127.0.0.1:8000/visualization/demo/" + r.text + "/"
+        print(url_viz)
+        return(url_viz)
+
+
+
 # if __name__ == '__main__':
 #     T = 900
 #     R = 8.314
@@ -408,16 +424,16 @@ class Simulator:
 #     print("Reaction rate: \n", rsystem.getReactionRate(), "\n")
 #     # print("System info: \n", rsystem, "\n")
 
-
 #     sim = Simulator(rsystem, 0.05)
 #     sim.solveODE()
-#     # print(sim.yout)
-#     # sim.plot_specie_all()
-#     # print(sim.check_equilibrium(5, 5e-11))
-#     # sim.plot_specie(4)
-#     # print(sim.eq_diff)
-#     # sim.plot_reaction_all()
-#     # print(sim.equilibrium_graph())
+#     sim.visualize()
+    # print(sim.yout)
+    # sim.plot_specie_all()
+    # print(sim.check_equilibrium(5, 5e-11))
+    # sim.plot_specie(4)
+    # print(sim.eq_diff)
+    # sim.plot_reaction_all()
+    # print(sim.equilibrium_graph())
 
 
 

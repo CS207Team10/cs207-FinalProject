@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='chemkin_g10',
-      version='0.50',
+      version='0.60',
       description='A chemical kinetics library',
       url='https://github.com/CS207Team10/cs207-FinalProject',
       author='Hidenori Tanaka, Jiachen Song, Xiangru Shu',
