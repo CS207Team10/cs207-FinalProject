@@ -31,7 +31,7 @@ Basic usage includes:
  
  ### Reaction rate coefficients
 
-The library is able to compute 4 different kinds of reaction rate coefficient: Constant reaction rate coefficient, Arrhenius reaction rate coefficient, Modified Arrhenius reaction rate coefficient and backward reaction rate coefficient as specified below. 
+The library is able to compute 4 different kinds of reaction rate coefficient: constant reaction rate coefficient, arrhenius reaction rate coefficient, modified Arrhenius reaction rate coefficient and backward reaction rate coefficient as specified below. 
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\begin{align*}&space;k_{\textrm{const}}&space;&=&space;k&space;&&&space;\text{constant}&space;\\&space;k_{\textrm{arr}}&space;&=&space;A&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Arrhenius}&space;\\&space;k_{\textrm{mod&space;arr}}&space;&=&space;A&space;T^{b}&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Modified&space;Arrhenius}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\begin{align*}&space;k_{\textrm{const}}&space;&=&space;k&space;&&&space;\text{constant}&space;\\&space;k_{\textrm{arr}}&space;&=&space;A&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Arrhenius}&space;\\&space;k_{\textrm{mod&space;arr}}&space;&=&space;A&space;T^{b}&space;\exp\left(-\frac{E}{RT}\right)&space;&&&space;\text{Modified&space;Arrhenius}&space;\end{align*}" title="\begin{align*} k_{\textrm{const}} &= k && \text{constant} \\ k_{\textrm{arr}} &= A \exp\left(-\frac{E}{RT}\right) && \text{Arrhenius} \\ k_{\textrm{mod arr}} &= A T^{b} \exp\left(-\frac{E}{RT}\right) && \text{Modified Arrhenius} \end{align*}" /></a>
 
@@ -52,8 +52,7 @@ where <img src="https://tex.s2cms.ru/svg/%5Cgamma_%7Bj%7D%20%3D%20%5Csum_%7Bi%3D
  
  We used the principle of mass action to obtain the progress rate of each reaction.
  
-In essence, we assert that the progress rate of a reaction is proportional to the concentrations of the reactants.
-Thus, the forward progress rate is:
+Basically, the progress rate of a reaction is proportional to the concentrations of the reactants. Thus, the forward progress rate is:
 
  <img src="https://tex.s2cms.ru/svg/r_%7Bj%7D%20%3D%20k_%7Bj%7D%5E%7B(f)%7D%5Cprod_%7Bi%3D1%7D%5E%7BN%7D%7Bx_%7Bi%7D%5E%7B%5Cnu_%7Bij%7D%5E%7B%5Cprime%7D%7D%7D%2C%20%5Cqquad%20j%20%3D%201%2C%5Cldots%2C%20M" alt="r_{j} = k_{j}^{(f)}\prod_{i=1}^{N}{x_{i}^{\nu_{ij}^{\prime}}}, \qquad j = 1,\ldots, M" />
 
@@ -107,15 +106,44 @@ A parse function is also included in our library, which was designed to parse an
 
 Our program includes four separate modules: `chemkin`, `computation`, `db` and `thermo`. 
 
-### ``chemkin`` class
+### ``chemkin`` module
 
-`chemkin` is a class that represents a `ReactionSystem` object and a `Reaction` object. It includes functions: `updateCoeff`, `updateReaction`, `buildFromList`, `buildFromXml`, `getProgressRate`, `getReactionRate` and `parse`, which helps to create a `ReactionSystem` by parsing .xml input file.
+`chemkin` is a module that contains a `ReactionSystem` class, a `Reaction` class and a `Simulator` class. 
+
+1. `ReactionSystem` class:
+
+    * `buildFromList`
+    * `buildFromXml`
+    * `getProgressRate`
+    * `getReactionRate`
+    * `parse`
+    
+2. `Reaction` class:
+
+    * `updateCoeff`
+    * `updateReaction`
+    
+3. `Simulator` class:
+    * `solveODE`
+    * `check_equilibrium`
+    * `equilibrium_graph`
+    * `plot_specie`
+    * `plot_specie_all`
+    * `plot_reaction_all`
 
 ### ``computation`` module
 
-`computation` module contains all necessary functions to compute the coefficients and rates. It includes functions: `k_const`, `k_arr`, `k_mod_arr`, `progress_rate`, `reaction_rate`.
+`computation` module contains all necessary functions to compute the coefficients and rates. 
 
- 
+It includes functions: 
+
+* `k_const`
+* `k_arr`
+* `k_mod_arr`
+* `progress_rate`
+* `reaction_rate`
+* `equilibrium_constant`
+
 ### ``thermo`` module
 
 `thermo` includes functions: `H_over_RT`, `S_over_R`, `backward_coeffs`
