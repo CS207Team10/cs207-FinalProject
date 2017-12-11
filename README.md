@@ -282,7 +282,7 @@ print(sim.check_equilibrium(5, 57))
 
 Furthermore, we came up with another method to check equilibrium, which was developed based on slopes of concentration plots.
 
-If the largest concentration among chemical species at time t is C, then the characteristic slope of the c(t) curves can be calculated as C/t. We judge the system to be in equilibrium if all the slopes of the concentrations at the last two time steps are less than the critical slope value "1e-9*C/t".
+If the largest concentration among chemical species at time t is C, then the characteristic slope of the c(t) curves can be calculated as C/t. We judge the system to be in equilibrium if all the slopes of the concentrations at the last two time steps are less than the critical slope value "1e-9*C/t". The choice of "1e-9" is our definition of equilibrium and the number could be changed to another small number.
 
 Example:
 ```
