@@ -255,6 +255,8 @@ class ReactionSystem:
 
 
 class Simulator:
+    """This class represents a simulator.
+    """
 
     def __init__(self, rsystem, maxTime, numSample=100, timeScale=1e9, eqThreshold=1e-05):
         self.rsystem = rsystem
@@ -313,11 +315,42 @@ class Simulator:
         return
 
     def check_equilibrium(self, index, t):
+        """Check if the reaction system has reached equilibrium
+
+        INPUTS:
+        =======
+        index: an integer
+               the index of reaction within the reaction system
+
+        t: an integer
+           a time stamp
+        
+        RETURN:
+        =======
+        eq: boolean
+            if the reaction system has reached equilibrium
+        
+        """
         if len(self.yout) != self.numSample:
             raise ValueError("Invalid yout!")
-        if eq_point[index] == -1:
+        if self.eq_point[index] == -1:
             return False
-        return t >= eq_point[index]
+        return t >= self.eq_point[index]
+
+    def equilibrium_graph(self):
+        """Check if the reaction system has reached equilibrium
+ 
+ 
+        RETURN:
+        =======
+        eq: boolean
+            if the reaction system has reached equilibrium
+        
+        """ 
+ 
+        slope_diff = (self.yout[-1] - self.yout[-2])/(self.tout[-1]/len(self.tout))
+        critical_slope = max(self.yout[-1])/(self.tout[-1])
+        return all(s < critical_slope for s in slope_diff)
 
 
     def plot_specie_all(self):
@@ -332,6 +365,11 @@ class Simulator:
 
     def plot_specie(self, index):
         """Plot concentration for one specie in the reaction system
+
+        INPUTS:
+        =======
+        index: an integer
+               the index of specie 
        
         """ 
         if len(self.yout) != self.numSample:
@@ -342,6 +380,12 @@ class Simulator:
         plt.show()
 
     def plot_reaction_all(self):
+        """
+        Plot (reaction quotient - equilibrium constant) / equilibrium constant 
+        for all reactions in the reaction system
+ 
+       
+        """
         if len(self.yout) != self.numSample:
             raise ValueError("Invalid yout!")
         plt.plot(self.tout[1:], np.sqrt(self.eq_diff[1:]))
@@ -359,12 +403,14 @@ if __name__ == '__main__':
     # print("System info: \n", rsystem, "\n")
 
 
-    sim = Simulator(rsystem, 0.1)
+    sim = Simulator(rsystem, 34)
     sim.solveODE()
     print(sim.eq_point)
-    # sim.plot_specie_all()
-    sim.plot_specie(4)
+    sim.plot_specie_all()
+    # print(sim.check_equilibrium(0, 33))
+    # sim.plot_specie(4)
     # sim.plot_reaction_all()
+    # print(sim.equilibrium_graph())
 
 
 
