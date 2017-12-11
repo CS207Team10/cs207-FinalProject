@@ -1,5 +1,6 @@
 import numpy as np
 import chemkin_g10.chemkin as ck
+import matplotlib.pyplot as plt
 
 import os
 path = os.path.dirname(os.path.realpath(__file__)) +  "/data/xml/"
@@ -69,8 +70,8 @@ def test_rsystem_reaction_rates():
     concs = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
     rsystem = ck.ReactionSystem(1500, 8.314, path2+'nasa.sqlite')
     rsystem.buildFromXml(path + "rxns_reversible.xml", concs)
-    assert(np.allclose(rsystem.getReactionRate(), np.array([6.18148072e+14,  -7.06429290e+14,  -7.24139610e+14,   2.95950938e+13,
-                                                            1.35082567e+14,   8.12522426e+14,  -1.06194735e+14,  -5.85845244e+13])))
+    assert(np.allclose(rsystem.getReactionRate(), np.array([  6.22261584e+14, -7.10493349e+14, -7.28739230e+14, 2.97882825e+13, 
+                                                              1.35132846e+14,  8.16829127e+14, -1.06193909e+14, -5.85853515e+13])))
 
 
 # Test parse 
@@ -103,3 +104,37 @@ def test_parse_R_neg():
         ck.ReactionSystem.parse(path + "rxns_short_2.xml", 340, -8.314)
     except ValueError as err:
         assert(type(err) == ValueError)
+
+# Test Simulator
+def test_solve_ODE():
+    T = 900
+    R = 8.314
+    concs = np.array([0.5, 0, 0, 2, 0, 1, 0, 0])
+    rsystem = ck.ReactionSystem(T, R, "tests/data/db/nasa.sqlite")
+    rsystem.buildFromXml("tests/data/xml/rxns_reversible.xml", concs)
+    sim = ck.Simulator(rsystem, 0.05)
+    try:
+        sim.solveODE()
+    except ValueError as err:
+        assert(type(err) == ValueError)
+
+def test_plot():
+    T = 900
+    R = 8.314
+    concs = np.array([0.5, 0, 0, 2, 0, 1, 0, 0])
+    rsystem = ck.ReactionSystem(T, R, "tests/data/db/nasa.sqlite")
+    rsystem.buildFromXml("tests/data/xml/rxns_reversible.xml", concs)
+    sim = ck.Simulator(rsystem, 0.05)
+    sim.solveODE()
+    try:
+        sim.plot_specie_all()
+        plt.close('all')
+        sim.plot_specie(4)
+        plt.close('all')
+        sim.plot_reaction_all()
+        plt.close('all')
+    except ValueError as err:
+        assert(type(err) == ValueError)
+
+
+

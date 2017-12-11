@@ -269,9 +269,12 @@ class Simulator:
 
     def solveODE(self):
         """Solve the ODE
+        INPUTS:
+        =======
+        t:  float
+            total time of simulation
+               
         """       
-
-        # dy/dt
         def fun(concs, t):
             nu = self.rsystem.nu_prod - self.rsystem.nu_react
             rj = cp.progress_rate(self.rsystem.nu_react, self.rsystem.nu_prod, self.rsystem.k, concs, self.rsystem.T, self.rsystem.a, 
@@ -309,23 +312,24 @@ class Simulator:
                     continue
 
                 if eq_diff[i][j] < self.eqThreshold:
-                    # eq_point[j] = self.tout[i]
                     eq_point[j] = self.tout[i]
+                    # eq_point[j] = i
 
         self.eq_point = eq_point
         self.eq_diff = eq_diff
         return
 
     def check_equilibrium(self, index, t):
-        """Check if the reaction system has reached equilibrium
+        """Check if the reaction system has reached equilibrium, by comparing
+           reaction quotient to reaction coefficient
 
         INPUTS:
         =======
         index: an integer
                the index of reaction within the reaction system
 
-        t: an integer
-           a time stamp
+        t:     an integer
+               a time stamp
         
         RETURN:
         =======
@@ -340,8 +344,7 @@ class Simulator:
         return t >= self.eq_point[index]
 
     def equilibrium_graph(self):
-        """Check if the reaction system has reached equilibrium
- 
+        """Another way to check if the reaction system has reached equilibrium 
  
         RETURN:
         =======
@@ -364,7 +367,7 @@ class Simulator:
             raise ValueError("Invalid yout!")
         plt.plot(self.tout, self.yout)
         plt.legend(self.rsystem.species)
-        plt.show()
+        plt.show(block=False)
 
     def plot_specie(self, index):
         """Plot concentration for one specie in the reaction system
@@ -380,41 +383,40 @@ class Simulator:
         out = np.transpose(self.yout)[index]
         plt.plot(self.tout, out, label = self.rsystem.species[index])
         plt.legend()
-        plt.show()
+        plt.show(block=False)
 
     def plot_reaction_all(self):
-        """
-        Plot (reaction quotient - equilibrium constant) / equilibrium constant 
-        for all reactions in the reaction system
+        """Plot (reaction quotient - equilibrium constant) / equilibrium constant 
+        for all reactions in the reaction system, to check when each reaction 
+        reaches equilibrium
  
-       
         """
         if len(self.yout) != self.numSample:
             raise ValueError("Invalid yout!")
         plt.plot(self.tout[1:], np.sqrt(self.eq_diff[1:]))
         plt.legend([r.reactMeta['id'] for r in self.rsystem.reactionList])
-        plt.show()
+        plt.show(block=False)
 
-if __name__ == '__main__':
-    T = 900
-    R = 8.314
-    concs = np.array([0.5, 0, 0, 2, 0, 1, 0, 0])
-    rsystem = ReactionSystem(T, R, "../tests/data/db/nasa.sqlite")
-    rsystem.buildFromXml("../tests/data/xml/rxns_reversible.xml", concs)
-    # print("Progress rate: \n", rsystem.getProgressRate(), "\n")
-    print("Reaction rate: \n", rsystem.getReactionRate(), "\n")
-    # print("System info: \n", rsystem, "\n")
+# if __name__ == '__main__':
+#     T = 900
+#     R = 8.314
+#     concs = np.array([0.5, 0, 0, 2, 0, 1, 0, 0])
+#     rsystem = ReactionSystem(T, R, "../tests/data/db/nasa.sqlite")
+#     rsystem.buildFromXml("../tests/data/xml/rxns_reversible.xml", concs)
+#     # print("Progress rate: \n", rsystem.getProgressRate(), "\n")
+#     print("Reaction rate: \n", rsystem.getReactionRate(), "\n")
+#     # print("System info: \n", rsystem, "\n")
 
 
-    sim = Simulator(rsystem, 0.05)
-    sim.solveODE()
-    # print(sim.yout)
-    # sim.plot_specie_all()
-    # print(sim.check_equilibrium(5, 5e-11))
-    # sim.plot_specie(4)
-    # print(sim.eq_diff)
-    sim.plot_reaction_all()
-    # print(sim.equilibrium_graph())
+#     sim = Simulator(rsystem, 0.05)
+#     sim.solveODE()
+#     # print(sim.yout)
+#     # sim.plot_specie_all()
+#     # print(sim.check_equilibrium(5, 5e-11))
+#     # sim.plot_specie(4)
+#     # print(sim.eq_diff)
+#     # sim.plot_reaction_all()
+#     # print(sim.equilibrium_graph())
 
 
 
