@@ -120,14 +120,14 @@ def test_solve_ODE():
     except ValueError as err:
         assert(type(err) == ValueError)
 
-def test_plot():
+def test_invalid_plot():
     T = 900
     R = 8.314
     concs = np.array([0.5, 0, 0, 2, 0, 1, 0, 0])
     rsystem = ck.ReactionSystem(T, R, "tests/data/db/nasa.sqlite")
     rsystem.buildFromXml("tests/data/xml/rxns_reversible.xml", concs)
     sim = ck.Simulator(rsystem, 0.05)
-    sim.solveODE()
+    # sim.solveODE()
     try:
         sim.plot_specie_all()
         plt.close('all')
@@ -137,6 +137,17 @@ def test_plot():
         plt.close('all')
     except ValueError as err:
         assert(type(err) == ValueError)
+
+def test_equilibrium_1():
+    T = 900
+    R = 8.314
+    concs = np.array([0.5, 0, 0, 2, 0, 1, 0, 0])
+    rsystem = ck.ReactionSystem(T, R, "tests/data/db/nasa.sqlite")
+    rsystem.buildFromXml("tests/data/xml/rxns_reversible.xml", concs)
+    sim = ck.Simulator(rsystem, 0.1)
+    sim.solveODE()
+    assert(sim.check_equilibrium(5, 0.99) == True)
+
 
 
 

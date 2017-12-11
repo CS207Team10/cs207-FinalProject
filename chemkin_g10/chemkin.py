@@ -337,8 +337,8 @@ class Simulator:
             if the reaction system has reached equilibrium
         
         """
-        if len(self.yout) != self.numSample:
-            raise ValueError("Invalid yout!")
+        if not hasattr(self, 'yout'):
+            raise ValueError("Please solve ODE first!")
         if self.eq_point[index] == -1:
             return False
         return t >= self.eq_point[index]
@@ -352,19 +352,20 @@ class Simulator:
             if the reaction system has reached equilibrium
         
         """ 
+        if not hasattr(self, 'yout'):
+            raise ValueError("Please solve ODE first!")
         slope_diff = (self.yout[-1] - self.yout[-2])/(self.tout[-1]/len(self.tout))
 
         critical_slope = max(self.yout[-1])/(self.tout[-1])*1e-07
         return all(s < critical_slope for s in slope_diff)
 
 
-
     def plot_specie_all(self):
         """Plot concentration for all species in the reaction system
        
         """ 
-        if len(self.yout) != self.numSample:
-            raise ValueError("Invalid yout!")
+        if not hasattr(self, 'yout'):
+            raise ValueError("Please solve ODE first!")
         plt.plot(self.tout, self.yout)
         plt.legend(self.rsystem.species)
         plt.show(block=False)
@@ -378,8 +379,8 @@ class Simulator:
                the index of specie 
        
         """ 
-        if len(self.yout) != self.numSample:
-            raise ValueError("Invalid yout!")
+        if not hasattr(v, 'yout'):
+            raise ValueError("Please solve ODE first!")
         out = np.transpose(self.yout)[index]
         plt.plot(self.tout, out, label = self.rsystem.species[index])
         plt.legend()
@@ -391,8 +392,8 @@ class Simulator:
         reaches equilibrium
  
         """
-        if len(self.yout) != self.numSample:
-            raise ValueError("Invalid yout!")
+        if not hasattr(self, 'yout'):
+            raise ValueError("Please solve ODE first!")
         plt.plot(self.tout[1:], np.sqrt(self.eq_diff[1:]))
         plt.legend([r.reactMeta['id'] for r in self.rsystem.reactionList])
         plt.show(block=False)
