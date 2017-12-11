@@ -347,10 +347,11 @@ class Simulator:
             if the reaction system has reached equilibrium
         
         """ 
- 
         slope_diff = (self.yout[-1] - self.yout[-2])/(self.tout[-1]/len(self.tout))
-        critical_slope = max(self.yout[-1])/(self.tout[-1])
+
+        critical_slope = max(self.yout[-1])/(self.tout[-1])*1e-07
         return all(s < critical_slope for s in slope_diff)
+
 
 
     def plot_specie_all(self):
@@ -403,13 +404,14 @@ if __name__ == '__main__':
     # print("System info: \n", rsystem, "\n")
 
 
-    sim = Simulator(rsystem, 34)
+    sim = Simulator(rsystem, 0.5)
     sim.solveODE()
-    print(sim.eq_point)
-    sim.plot_specie_all()
-    # print(sim.check_equilibrium(0, 33))
-    # sim.plot_specie(4)
-    # sim.plot_reaction_all()
+    # print(sim.yout)
+    # # print(sim.eq_point)
+    # sim.plot_specie_all()
+    # # print(sim.check_equilibrium(5, 57))
+    # # sim.plot_specie(4)
+    # # sim.plot_reaction_all()
     # print(sim.equilibrium_graph())
 
 
