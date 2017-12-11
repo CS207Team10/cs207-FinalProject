@@ -79,11 +79,6 @@ where <img src="https://tex.s2cms.ru/svg/%5Cnu_%7Bij%7D%20%3D%20%5Cnu_%7Bij%7D%5
 
 
 
-
-
-
-
-
 ## Installation
 
 All the classes and functions necessary to run the library were stored in chemkin_g10. All the tests were stored in tests folder. 
@@ -314,13 +309,10 @@ True
 
 It is always helpful for users to see how concentrations change over time graphically. Therefore, we added plot functions to visualize concentration change and we used `matplotlib` library to plot graphs.
 
-We still added our functions under the `ReactionSystem` class for it has all the variables we need to plot concentrations.
-
-To plot concentrations for the entire reaction system, we added function `plot_sys`, which will plot the resulting concentrations returned by function `ode` in the Y axis and time interval (0, t) in the X axis.
+To plot concentrations for the entire reaction system, we added function `plot_specie_all`, which will plot the concentrations for all the species in the system over time.
 
 To plot concentration for an individual specie, we added function `plot_specie`, which will take an integer as parameter to specify which specie to plot. 
 
-
-
+We also added a function `plot_reaction_all` to plot (reaction quotients - equilibrium constants)/ equilibrium constants.
 
 ### Web?
