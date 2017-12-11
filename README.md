@@ -271,7 +271,7 @@ print(sim.yout)
 
 The last array of concentrations is the final concentrations for each specie at time t.
 
-### equilibrium
+### Equilibrium
 
 In chemistry, chemical equilibrium is the state in which both reactants and products are present in concentrations which have no further tendency to change with time. Usually, this state results when the forward reaction proceeds at the same rate as the reverse reaction. 
 
