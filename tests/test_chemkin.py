@@ -1,6 +1,8 @@
 import numpy as np
 import chemkin_g10.chemkin as ck
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
 
 import os
 path = os.path.dirname(os.path.realpath(__file__)) +  "/data/xml/"
