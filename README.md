@@ -236,6 +236,16 @@ Users can also get all the concentrations at each time stamp by calling the foll
 print(sim.yout)
 ```
 
+```
+...
+[  1.62865785e+00   9.55229994e-02   9.03020740e-03   2.06975115e-01
+    1.22418085e+00   3.35632969e-01   4.49199685e-15   1.58667651e-20]
+ [  1.62865785e+00   9.55229994e-02   9.03020740e-03   2.06975115e-01
+    1.22418085e+00   3.35632969e-01   4.49199685e-15   1.58667651e-20]
+ [  1.62865785e+00   9.55229994e-02   9.03020740e-03   2.06975115e-01
+    1.22418085e+00   3.35632969e-01   4.49199685e-15   1.58667651e-20]]
+```
+
 The last array of concentrations is the final concentrations for each specie at time t.
 
 ### equilibrium
@@ -273,6 +283,10 @@ Users can simply call the following methods to see the equilibrium time stamp fo
 print(sim.eq_point)
 ```
 
+```
+[34, 67, 68, 62, 66, 58, 58, 64, 54, 65, 56]
+```
+
 Users may also want to check equilibrium with arbitrary time stamp, so we added a new function `check_equilibrium` which takes an index and a time stamp as parameters. By specifying index and time stamp, users can check equilibrium for a specific reaction at a specific time stamp. The function will simply compare this time stamp with the first equilibrium time stamp for that reaction and determine whether the reaction has reached equilibrium.
 
 An example of checking equilibrium for reaction 5 at time stamp 57:
@@ -280,13 +294,20 @@ An example of checking equilibrium for reaction 5 at time stamp 57:
 print(sim.check_equilibrium(5, 57))
 ```
 
+```
+False
+```
+
 Furthermore, we came up with another method to check equilibrium, which was developed based on slopes of concentration plots.
 
-If the largest concentration among chemical species at time t is C, then the characteristic slope of the c(t) curves can be calculated as C/t. We judge the system to be in equilibrium if all the slopes of the concentrations at the last two time steps are less than the critical slope value "1e-9*C/t". The choice of "1e-9" is our definition of equilibrium and the number could be changed to another small number.
+If the largest concentration among chemical species at time t is C, then the characteristic slope of the c(t) curves can be calculated as C/t. We judge the system to be in equilibrium if all the slopes of the concentrations at the last two time steps are less than the critical slope value "1e-7*C/t". The choice of "1e-7" is our definition of equilibrium and the number could be changed to another small number.
 
 Example:
 ```
 print(sim.equilibrium_graph())
+```
+```
+True
 ```
 
 ### Plot
