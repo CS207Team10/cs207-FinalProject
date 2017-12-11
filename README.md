@@ -4,6 +4,8 @@
 
 # cs207 Team 10 Final Project: Chemical Kinetics library
 
+#### Team Members:  Hidenori Tanaka, Jiachen Song and Xiangru Shu
+
 Introduction: Describe what problem the code is solving. You may borrow the Latex expressions from my lecture notes. Discuss in broad strokes what the purpose of the code is along with any features. Do not describe the details of the code yet.
 
 Installation: Tell the user how to install the library. Be thorough here. If there is more than one way to find and use the code, then please clearly discuss each method.
@@ -102,11 +104,9 @@ pytest
 
 ## Basic Usage and Examples
 
-A parse function is also included in our library, which was designed to parse an XML input file provided by users. The function handles inputs by reading in all the needed data and store them for later calculation. 
+Our library includes four separate modules: `chemkin`, `computation`, `db` and `thermo`. 
 
-Our program includes four separate modules: `chemkin`, `computation`, `db` and `thermo`. 
-
-### ``chemkin`` module
+### chemkin module
 
 `chemkin` is a module that contains a `ReactionSystem` class, a `Reaction` class and a `Simulator` class. 
 
@@ -131,7 +131,7 @@ Our program includes four separate modules: `chemkin`, `computation`, `db` and `
     * `plot_specie_all`
     * `plot_reaction_all`
 
-### ``computation`` module
+### computation module
 
 `computation` module contains all necessary functions to compute the coefficients and rates. 
 
@@ -144,15 +144,13 @@ It includes functions:
 * `reaction_rate`
 * `equilibrium_constant`
 
-### ``thermo`` module
+### thermo module
 
 `thermo` includes functions: `H_over_RT`, `S_over_R`, `backward_coeffs`
 
-### ```db``` module
+### db module
 
 ```db``` contains the functions to read NASA polynomials from the database.
-
-
 
 ### Examples
 
@@ -188,6 +186,7 @@ print("System info: \b", rsystem, "\n")
 ```
 
 ### Extensibility
+
 1. Reversible/Non-elementary reactions
    
    We store these types of information in the metadata of each reaction, for example:  
@@ -200,11 +199,12 @@ print("System info: \b", rsystem, "\n")
 
 2. Reaction rate coefficients not discussed in class
 
-   We can easily add a new method of computing reaction rate coefficient to our `ChemUtil` class.
+   We can easily add a new method of computing reaction rate coefficient to our `computation` module.
 
 3. Other extensions
 
    We can update the property (metadata) of a single reaction or its reaction rate coefficient (re-compute the coefficient), with any valid parameters. Here's an example of changing the coefficient of the 3rd reaction to be the same as the 1st reaction:
+   
    ```python
    print(rsystem.reactionList[2].k, rsystem.reactionList[0].k)
    # using the parameters of the first equation
@@ -224,7 +224,7 @@ print("System info: \b", rsystem, "\n")
 
 ## New Feature
 
-We implemented a new class `Simulator` under the `chemkin.py` module. The class includes an ODE solver function, two equilibrium check functions and three plot functions.
+We implemented a new class `Simulator` under the `chemkin` module. The class includes an ODE solver function, two equilibrium check functions and three plot functions.
 
 To initialize a `Simulator` object, users should pass in a `ReactionSystem` object, a time stamp, a number of integration time steps(default = 100), a time scale(default = 1e9) and an equilibrium threshold(default = 1e-05). 
 
@@ -339,8 +339,14 @@ It is always helpful for users to see how concentrations change over time graphi
 
 To plot concentrations for the entire reaction system, we added function `plot_specie_all`, which will plot the concentrations for all the species in the system over time.
 
+![plot_specie_all](https://github.com/CS207Team10/cs207-FinalProject/blob/master/images/Figure_1.png)
+
 To plot concentration for an individual specie, we added function `plot_specie`, which will take an integer as parameter to specify which specie to plot. 
 
+![plot_specie](https://github.com/CS207Team10/cs207-FinalProject/blob/master/images/Figure_2.png)
+
 We also added a function `plot_reaction_all` to plot (reaction quotients - equilibrium constants)/ equilibrium constants.
+
+![plot_reaction_all](https://github.com/CS207Team10/cs207-FinalProject/blob/master/images/Figure3.png)
 
 ### Web?
