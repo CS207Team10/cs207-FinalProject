@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='chemkin_g10',
-      version='0.3',
+      version='0.46',
       description='A chemical kinetics library',
       url='https://github.com/CS207Team10/cs207-FinalProject',
       author='Hidenori Tanaka, Jiachen Song, Xiangru Shu',
@@ -14,5 +14,8 @@ setup(name='chemkin_g10',
       ],
       setup_requires=['pytest-runner'],
       tests_require=['pytest', 'pytest-cov'],
-      include_package_data=True,
+      include_package_data=True, 
+      package_data={
+          'chemkin_g10': ["nasa.sqlite",],
+      }
       )

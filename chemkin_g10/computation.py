@@ -219,7 +219,7 @@ def equilibrium_constant(nu_react, nu_prod, k, T, a, reversibleFlagList):
             kb = backward_coeffs(kj, nu_prod[:, jdx] - nu_react[:, jdx], T, a)
             eq_constant.append(kj / kb) # ke
         else:
-            eq_constant.append(None) # no such constant for irreversible reaction
+            eq_constant.append(0) # no such constant for irreversible reaction
 
     return eq_constant
 

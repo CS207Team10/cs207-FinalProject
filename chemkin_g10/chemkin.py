@@ -1,10 +1,9 @@
 import numpy as np
 import xml.etree.ElementTree as ET
-import computation as cp
+import chemkin_g10.computation as cp
 from chemkin_g10.db import DatabaseOps as dbops
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
-
 
 class Reaction:
     """The class that represent a single Reaction
@@ -86,8 +85,8 @@ class ReactionSystem:
            the temperature of the system
     R:     float or int
            the universal gas constant
-    concs: numpy array of floats
-           concentration of species
+    dbFileName: string
+                the name of the db file
     """
     def __init__(self, T, R, dbFileName):
         self.T = T
@@ -101,6 +100,9 @@ class ReactionSystem:
         INPUTS:
         =======
         reactionList: list of Reaction object
+        species:      list of str
+        concs:        list of float
+                      initial concerntration for each species 
         
         """
         if len(species) != len(concs):
@@ -289,7 +291,7 @@ class Simulator:
 
         # get equilibrium point for each time point
         eq_point = [-1 for i in range(len(self.rsystem))]
-        eq_diff = [[None for j in range(len(self.rsystem))] for i in range(self.numSample)] 
+        eq_diff = [[0 for j in range(len(self.rsystem))] for i in range(self.numSample)] 
         eq_constant = self.rsystem.equilibrium_constant
 
         for i, concs in enumerate(self.yout):
@@ -399,20 +401,22 @@ if __name__ == '__main__':
     concs = np.array([0.5, 0, 0, 2, 0, 1, 0, 0])
     rsystem = ReactionSystem(T, R, "../tests/data/db/nasa.sqlite")
     rsystem.buildFromXml("../tests/data/xml/rxns_reversible.xml", concs)
-    print("Progress rate: \n", rsystem.getProgressRate(), "\n")
+    # print("Progress rate: \n", rsystem.getProgressRate(), "\n")
     print("Reaction rate: \n", rsystem.getReactionRate(), "\n")
     # print("System info: \n", rsystem, "\n")
 
 
-    sim = Simulator(rsystem, 0.1)
+    sim = Simulator(rsystem, 0.05)
     sim.solveODE()
     # print(sim.yout)
-    # print(sim.eq_point)
     # sim.plot_specie_all()
     # print(sim.check_equilibrium(5, 5e-11))
-    # # sim.plot_specie(4)
-    # # sim.plot_reaction_all()
+    # sim.plot_specie(4)
+    # print(sim.eq_diff)
+    sim.plot_reaction_all()
     # print(sim.equilibrium_graph())
+
+
 
 
 
