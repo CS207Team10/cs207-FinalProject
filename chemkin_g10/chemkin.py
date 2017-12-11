@@ -410,8 +410,8 @@ if __name__ == '__main__':
     # print(sim.eq_point)
     # sim.plot_specie_all()
     # print(sim.check_equilibrium(5, 5e-11))
-    # # sim.plot_specie(4)
-    # # sim.plot_reaction_all()
+    # sim.plot_specie(4)
+    sim.plot_reaction_all()
     # print(sim.equilibrium_graph())
 
 
