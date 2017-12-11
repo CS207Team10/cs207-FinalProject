@@ -6,18 +6,6 @@
 
 #### Team Members:  Hidenori Tanaka, Jiachen Song and Xiangru Shu
 
-Introduction: Describe what problem the code is solving. You may borrow the Latex expressions from my lecture notes. Discuss in broad strokes what the purpose of the code is along with any features. Do not describe the details of the code yet.
-
-Installation: Tell the user how to install the library. Be thorough here. If there is more than one way to find and use the code, then please clearly discuss each method.
-Suggest a preferred installation method. Tell the user how they can contribute to the development version if they so desire. Tell the user how to run the test suite. Be explicit on any dependencies.
-
-Basic Usage and Examples: Provide a few examples on using your software in some common situations. You may want to show how the code works with a small set of reactions. This is where you would introduce a toy demo problem and show off basic use cases. You would also highlight how to use your new feature here as well. If your code produces output or figures, you may want to include an examples/ directory in your repo so the user can try to reproduce the results in this section.
-
-New Feature: This is where you discuss the final feature. This section should contain the following information:
-Motivation of the new feature.
-Implementation details including any new modules, classes, or methods. I can find the exact implementation in your code base, so your job here is to make sure I can understand why you made certain design decisions and how everything works together.
-
-
 ## Introduction
 
 This program is a chemical kinetics library, which could be easily installed by users and used for various applications.
