@@ -1,6 +1,6 @@
 import numpy as np
 import xml.etree.ElementTree as ET
-import computation as cp
+import chemkin_g10.computation as cp
 from chemkin_g10.db import DatabaseOps as dbops
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
@@ -404,10 +404,10 @@ if __name__ == '__main__':
     # print("System info: \n", rsystem, "\n")
 
 
-    sim = Simulator(rsystem, 0.5)
+    sim = Simulator(rsystem, 0.1)
     sim.solveODE()
     # print(sim.yout)
-    # # print(sim.eq_point)
+    print(sim.eq_point)
     # sim.plot_specie_all()
     # # print(sim.check_equilibrium(5, 57))
     # # sim.plot_specie(4)
