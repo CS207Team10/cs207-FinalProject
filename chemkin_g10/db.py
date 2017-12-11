@@ -3,7 +3,13 @@ import sqlite3
 from pathlib import Path
 
 class DatabaseOps:
-
+    """The class that represent db related operations
+    Parameters
+    
+    ----------
+    fileName: string
+                the name of the db file
+    """
     def __init__(self, fileName):
         my_file = Path(fileName)
         if my_file.is_file():
@@ -12,6 +18,17 @@ class DatabaseOps:
             raise ValueError("The db file: {} does not exist!".format(str(my_file)))
 
 
+    """Get the NASA coefficient corresbonding to the T, that is, T should be within
+       the range, Tmin <= T <= Tmid or Tmid <= T <= Tmax
+
+    INPUTS:
+    =======
+    species:   list of str
+               all the species
+    T:         float
+               temperature
+
+    """
     def get_coeffs(self, species, T):
         cursor = self.db.cursor()
         a = []

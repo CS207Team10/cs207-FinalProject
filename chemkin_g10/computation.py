@@ -209,6 +209,34 @@ def reaction_rate(nu_react, nu_prod, k, concs, T, a, reversibleFlagList):
 
 
 def equilibrium_constant(nu_react, nu_prod, k, T, a, reversibleFlagList):
+    """Returns the progress rate of a system elementary reactions (whether reversible or not)
+    INPUTS:
+    =======
+    nu_react: numpy array of floats,
+              size: num_species X num_reactions
+              stoichiometric coefficients for the reaction
+    nu_prod:  numpy array of floats,
+              size: num_species X num_reactions
+              stoichiometric coefficients for the products
+    k:        array of floats
+              Reaction rate coefficient for the reaction
+    T:        float
+              Temperature
+              Must be positive
+    a:        numpy array of floats,
+              size: num_species X 7
+              nasa coefficients of each species
+    reversibleFlagList:
+              array of booleans, 
+              size: num_reactions
+              boolean indicator indicating wether each reaction is reversible
+    RETURNS:
+    ========
+    f: numpy array of floats
+       size: num_reactions
+       the equilibrium constant of each reaction
+    
+    """
     eq_constant = []
     for jdx, kj in enumerate(k):
         if kj < 0:

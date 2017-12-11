@@ -257,7 +257,7 @@ class ReactionSystem:
 
 
 class Simulator:
-    """This class represents a simulator.
+    """This class represents a simulator for a system of reversible reactions.
     """
 
     def __init__(self, rsystem, maxTime, numSample=100, timeScale=1e9, eqThreshold=1e-05):
