@@ -339,8 +339,14 @@ It is always helpful for users to see how concentrations change over time graphi
 
 To plot concentrations for the entire reaction system, we added function `plot_specie_all`, which will plot the concentrations for all the species in the system over time.
 
+![plot_specie_all](https://github.com/CS207Team10/cs207-FinalProject/blob/master/images/Figure_1.png)
+
 To plot concentration for an individual specie, we added function `plot_specie`, which will take an integer as parameter to specify which specie to plot. 
 
+![plot_specie](https://github.com/CS207Team10/cs207-FinalProject/blob/master/images/Figure_2.png)
+
 We also added a function `plot_reaction_all` to plot (reaction quotients - equilibrium constants)/ equilibrium constants.
+
+![plot_reaction_all](https://github.com/CS207Team10/cs207-FinalProject/blob/master/images/Figure_3.png)
 
 ### Web?
