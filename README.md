@@ -347,6 +347,6 @@ To plot concentration for an individual specie, we added function `plot_specie`,
 
 We also added a function `plot_reaction_all` to plot (reaction quotients - equilibrium constants)/ equilibrium constants.
 
-![plot_reaction_all](https://github.com/CS207Team10/cs207-FinalProject/blob/master/images/Figure_3.png)
+![plot_reaction_all](https://github.com/CS207Team10/cs207-FinalProject/blob/master/images/Figure3.png)
 
 ### Web?
