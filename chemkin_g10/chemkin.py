@@ -1,6 +1,6 @@
 import numpy as np
 import xml.etree.ElementTree as ET
-import chemkin_g10.computation as cp
+import computation as cp
 from chemkin_g10.db import DatabaseOps as dbops
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
@@ -308,7 +308,7 @@ class Simulator:
 
                 if eq_diff[i][j] < self.eqThreshold:
                     # eq_point[j] = self.tout[i]
-                    eq_point[j] = i
+                    eq_point[j] = self.tout[i]
 
         self.eq_point = eq_point
         self.eq_diff = eq_diff
@@ -407,9 +407,9 @@ if __name__ == '__main__':
     sim = Simulator(rsystem, 0.1)
     sim.solveODE()
     # print(sim.yout)
-    print(sim.eq_point)
+    # print(sim.eq_point)
     # sim.plot_specie_all()
-    # # print(sim.check_equilibrium(5, 57))
+    # print(sim.check_equilibrium(5, 5e-11))
     # # sim.plot_specie(4)
     # # sim.plot_reaction_all()
     # print(sim.equilibrium_graph())
