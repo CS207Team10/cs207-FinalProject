@@ -360,7 +360,7 @@ We've also implemented a web visualization. With the help of javascript, the tre
 ```python
 simulation.visualize() # the website will pop up 
 ```
-To get a direct view without building your `ReactionSystem` and `Simulator`, here's the [link](http://cs207g10viz.us-east-1.elasticbeanstalk.com/visualization/demo/eYrTIlV/).
+To get a direct view without building your `ReactionSystem` and `Simulator`, here's the [link](http://cs207g10viz.us-east-1.elasticbeanstalk.com/visualization/demo/3XB1ELk/).
 
 ~~Check out the demo [here]~~ ~~(https://giphy.com/gifs/l3mZ5WJKdimnC1zqM/fullscreen)~~
 
