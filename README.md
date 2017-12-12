@@ -170,7 +170,7 @@ print("Reaction rate: \n", rsystem.getReactionRate(), "\n")
 If we want to get a summary of each reaction and also the whole system, we can do this by:
 
 ```python
-print("System info: \b", rsystem, "\n")
+print("System info: \n", rsystem, "\n")
 ```
 
 ### Extensibility
@@ -205,7 +205,7 @@ print("System info: \b", rsystem, "\n")
 
    Then rebuild the system with the new variables: 
    ```python
-   rsystem.buildFromList(rsystem.reactionList)
+   rsystem.buildFromList(rsystem.reactionList, ["H","O","OH","H","H2O","O2","HO2","H2O2"], np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]))
    ```
 
 ## New Feature
@@ -223,11 +223,11 @@ import numpy as np
 T = 900
 R = 8.314
 concs = np.array([0.5, 0, 0, 2, 0, 1, 0, 0])
-rsystem = ck.ReactionSystem(T, R, "../tests/data/db/nasa.sqlite")
-rsystem.buildFromXml("../tests/data/xml/rxns_reversible.xml", concs)
+rsystem = ck.ReactionSystem(T, R, "tests/data/db/nasa.sqlite")
+rsystem.buildFromXml("tests/data/xml/rxns_reversible.xml", concs)
 
 # Initialize a new simulation from time 0 to 0.1/1e9
-simulation = sim.Simulator(rsystem, 0.1, numSample=100, timeScale=1e9, eqThreshold=1e-05)
+simulation = sim.Simulator(rsystem, 0.05, numSample=100, timeScale=1e9, eqThreshold=1e-05)
 ```
 
 ### ODE Solver
@@ -339,7 +339,7 @@ simulation.plot_specie_all()
 To plot concentration for an individual specie, we added function `plot_specie`, which will take a species as parameter to specify which specie to plot. 
 
 ```python
-simulation.plot_specie(H2O)
+simulation.plot_specie("H2O")
 ```
 
 ![plot_specie](https://github.com/CS207Team10/cs207-FinalProject/blob/master/images/Figure_2.png)
@@ -358,7 +358,7 @@ simulation.plot_reaction_all()
 
 We've also implemented a web visualization. With the help of javascript, the trend of how reactions/species change during simulation is much more straightforward. In addition, it also shows the detailed information about each reaction/species. It still has some bugs as the `odeint` library are inconsistent with same parameters. To access the visualization of current simulation, simply run
 ```python
-simulation.visualize()
+simulation.visualize() # the website will pop up 
 ```
 To get a direct view without building your `ReactionSystem` and `Simulator`, here's the [link](http://cs207g10viz.us-east-1.elasticbeanstalk.com/visualization/demo/eYrTIlV/).
 
