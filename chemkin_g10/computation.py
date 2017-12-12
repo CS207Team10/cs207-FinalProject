@@ -252,7 +252,6 @@ def equilibrium_constant(nu_react, nu_prod, k, T, a, reversibleFlagList):
     return eq_constant
 
 
-
-if __name__ == '__main__':
-    print("")
+# if __name__ == '__main__':
+#     print("")
 
