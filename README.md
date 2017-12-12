@@ -227,7 +227,7 @@ rsystem = ck.ReactionSystem(T, R, "tests/data/db/nasa.sqlite")
 rsystem.buildFromXml("tests/data/xml/rxns_reversible.xml", concs)
 
 # Initialize a new simulation from time 0 to 0.1/1e9
-simulation = sim.Simulator(rsystem, 0.05, numSample=100, timeScale=1e9, eqThreshold=1e-05)
+simulation = sim.Simulator(rsystem, 0.1, numSample=100, timeScale=1e9, eqThreshold=1e-05)
 ```
 
 ### ODE Solver
