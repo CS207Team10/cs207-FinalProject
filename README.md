@@ -180,9 +180,7 @@ print("System info: \b", rsystem, "\n")
    We store these types of information in the metadata of each reaction, for example:  
    ```python
    rsystem.reactionList[0].reactMeta
-   ```
-   ```
-   {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction01'}
+   >> {'reversible': 'no', 'type': 'Elementary', 'id': 'reaction01'}
    ```
 
 2. Reaction rate coefficients not discussed in class
@@ -216,9 +214,19 @@ We implemented a new class `Simulator` under the `chemkin` module. The class inc
 
 To initialize a `Simulator` object, users should pass in a `ReactionSystem` object, an ending time for simulation (start at 0), a number of integration time steps(default = 100), a time scale(default = 1e9, s to ns) and an equilibrium threshold(default = 1e-05). 
 
-For example:
+A new example:
 ```python
 from chemkin_g10 import simulator as sim
+from chemkin_g10 import chemkin as ck
+import numpy as np
+
+T = 900
+R = 8.314
+concs = np.array([0.5, 0, 0, 2, 0, 1, 0, 0])
+rsystem = ck.ReactionSystem(T, R, "../tests/data/db/nasa.sqlite")
+rsystem.buildFromXml("../tests/data/xml/rxns_reversible.xml", concs)
+
+# Initialize a new simulation from time 0 to 0.1/1e9
 simulation = sim.Simulator(rsystem, 0.1, numSample=100, timeScale=1e9, eqThreshold=1e-05)
 ```
 
@@ -304,9 +312,7 @@ Users may also want to check equilibrium with arbitrary time stamp, so we added 
 An example of checking equilibrium for reaction 5 at time 5e-11(5e-11 is less than 5.858585858585858e-11, so it has not reached equilibrium):
 ```python
 print(simulation.check_equilibrium(5, 5e-11))
-```
-```
-False
+>> False
 ```
 
 Furthermore, we came up with another method to check equilibrium, which was developed based on slopes of concentration plots.
@@ -316,9 +322,7 @@ If the largest concentration among chemical species at time t is C, then the cha
 Example:
 ```python
 print(simulation.equilibrium_graph())
-```
-```
-True
+>> True
 ```
 
 ### Basic Plot (Non-Interactive)
@@ -356,6 +360,7 @@ We've also implemented a web visualization. With the help of javascript, the tre
 ```python
 simulation.visualize()
 ```
+To get a direct view without building your `ReactionSystem` and `Simulator`, here's the [link](http://cs207g10viz.us-east-1.elasticbeanstalk.com/visualization/demo/eYrTIlV/).
 
 ~~Check out the demo [here]~~ ~~(https://giphy.com/gifs/l3mZ5WJKdimnC1zqM/fullscreen)~~
 
