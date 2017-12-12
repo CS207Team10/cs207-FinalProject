@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 import chemkin_g10.computation as cp
 from chemkin_g10.db import DatabaseOps as dbops
 from scipy.integrate import odeint
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import requests
 import json
 
@@ -362,47 +362,48 @@ class Simulator:
         return all(s < critical_slope for s in slope_diff)
 
 
-    def plot_specie_all(self):
-        """Plot concentration for all species in the reaction system
+    # def plot_specie_all(self):
+    #     """Plot concentration for all species in the reaction system
        
-        """ 
-        if not hasattr(self, 'yout'):
-            raise ValueError("Please solve ODE first!")
-        plt.plot(self.tout, self.yout)
-        plt.legend(self.rsystem.species)
-        plt.show(block=False)
+    #     """ 
+    #     if not hasattr(self, 'yout'):
+    #         raise ValueError("Please solve ODE first!")
+    #     plt.plot(self.tout, self.yout)
+    #     plt.legend(self.rsystem.species)
+    #     plt.show(block=False)
 
-    def plot_specie(self, index):
-        """Plot concentration for one specie in the reaction system
+    # def plot_specie(self, index):
+    #     """Plot concentration for one specie in the reaction system
 
-        INPUTS:
-        =======
-        index: an integer
-               the index of specie 
+    #     INPUTS:
+    #     =======
+    #     index: an integer
+    #            the index of specie 
        
-        """ 
-        if not hasattr(v, 'yout'):
-            raise ValueError("Please solve ODE first!")
-        out = np.transpose(self.yout)[index]
-        plt.plot(self.tout, out, label = self.rsystem.species[index])
-        plt.legend()
-        plt.show(block=False)
+    #     """ 
+    #     if not hasattr(v, 'yout'):
+    #         raise ValueError("Please solve ODE first!")
+    #     out = np.transpose(self.yout)[index]
+    #     plt.plot(self.tout, out, label = self.rsystem.species[index])
+    #     plt.legend()
+    #     plt.show(block=False)
 
-    def plot_reaction_all(self):
-        """Plot (reaction quotient - equilibrium constant) / equilibrium constant 
-        for all reactions in the reaction system, to check when each reaction 
-        reaches equilibrium
+    # def plot_reaction_all(self):
+    #     """Plot (reaction quotient - equilibrium constant) / equilibrium constant 
+    #     for all reactions in the reaction system, to check when each reaction 
+    #     reaches equilibrium
  
-        """
-        if not hasattr(self, 'yout'):
-            raise ValueError("Please solve ODE first!")
-        plt.plot(self.tout[1:], np.sqrt(self.eq_diff[1:]))
-        plt.legend([r.reactMeta['id'] for r in self.rsystem.reactionList])
-        plt.show(block=False)
+    #     """
+    #     if not hasattr(self, 'yout'):
+    #         raise ValueError("Please solve ODE first!")
+    #     plt.plot(self.tout[1:], np.sqrt(self.eq_diff[1:]))
+    #     plt.legend([r.reactMeta['id'] for r in self.rsystem.reactionList])
+    #     plt.show(block=False)
 
 
     def visualize(self):
-        """Return a link to visualize the system in the web front-end (website is local currently)
+        """Return a link to visualize the system in the web front-end (javascript), which is 
+           way better than tkinter
         """
         url_local = "http://127.0.0.1:8000/visualization/viz/"
         files = {'file': open(self.rsystem.inputFile, 'rb')}
