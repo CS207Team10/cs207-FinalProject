@@ -214,11 +214,12 @@ print("System info: \b", rsystem, "\n")
 
 We implemented a new class `Simulator` under the `chemkin` module. The class includes an ODE solver function, two equilibrium check functions and three plot functions.
 
-To initialize a `Simulator` object, users should pass in a `ReactionSystem` object, a time stamp, a number of integration time steps(default = 100), a time scale(default = 1e9) and an equilibrium threshold(default = 1e-05). 
+To initialize a `Simulator` object, users should pass in a `ReactionSystem` object, an ending time for simulation (start at 0), a number of integration time steps(default = 100), a time scale(default = 1e9, s to ns) and an equilibrium threshold(default = 1e-05). 
 
 For example:
-```
-sim = Simulator(rsystem, 0.1, numSample=100, timeScale=1e9, eqThreshold=1e-05)
+```python
+from chemkin_g10 import simulator as sim
+simulation = sim.Simulator(rsystem, 0.1, numSample=100, timeScale=1e9, eqThreshold=1e-05)
 ```
 
 ### ODE Solver
@@ -237,14 +238,14 @@ The formula of reaction rate for each specie is specified below:
 
 To use this function, users can simply call:
 
-```
-sim.solveODE()
+```python
+simulation.solveODE()
 ```
 
 Users can also get all the concentrations at each time stamp by calling the following methods:
 
-```
-print(sim.yout)
+```python
+print(simulation.yout)
 ```
 
 ```
@@ -257,7 +258,7 @@ print(sim.yout)
     1.22418085e+00   3.35632969e-01   4.49199685e-15   1.58667651e-20]]
 ```
 
-The last array of concentrations is the final concentrations for each specie at time t.
+The last array of concentrations is the final concentrations for each specie at different timestamps.
 
 ### Equilibrium
 
@@ -291,7 +292,7 @@ For each reaction, we found the first time stamp that the reaction reaches equil
 
 Users can simply call the following methods to see the equilibrium time stamp for each reaction:
 ```
-print(sim.eq_point)
+print(simulation.eq_point)
 ```
 
 ```
@@ -301,10 +302,9 @@ print(sim.eq_point)
 Users may also want to check equilibrium with arbitrary time stamp, so we added a new function `check_equilibrium` which takes an index and a time stamp as parameters. By specifying index and time stamp, users can check equilibrium for a specific reaction at a specific time stamp. The function will simply compare this time stamp with the first equilibrium time stamp for that reaction and determine whether the reaction has reached equilibrium.
 
 An example of checking equilibrium for reaction 5 at time 5e-11(5e-11 is less than 5.858585858585858e-11, so it has not reached equilibrium):
+```python
+print(simulation.check_equilibrium(5, 5e-11))
 ```
-print(sim.check_equilibrium(5, 5e-11))
-```
-
 ```
 False
 ```
@@ -314,44 +314,50 @@ Furthermore, we came up with another method to check equilibrium, which was deve
 If the largest concentration among chemical species at time t is C, then the characteristic slope of the c(t) curves can be calculated as C/t. We judge the system to be in equilibrium if all the slopes of the concentrations at the last two time steps are less than the critical slope value "1e-7*C/t". The choice of "1e-7" is our definition of equilibrium and the number could be changed to another small number.
 
 Example:
-```
-print(sim.equilibrium_graph())
+```python
+print(simulation.equilibrium_graph())
 ```
 ```
 True
 ```
 
-### Plot
+### Basic Plot (Non-Interactive)
 
 It is always helpful for users to see how concentrations change over time graphically. Therefore, we added plot functions to visualize concentration change and we used `matplotlib` library to plot graphs.
 
 To plot concentrations for the entire reaction system, we added function `plot_specie_all`, which will plot the concentrations for all the species in the system over time.
-```
-sim.plot_specie_all()
+```python
+simulation.plot_specie_all()
 ```
 
 ![plot_specie_all](https://github.com/CS207Team10/cs207-FinalProject/blob/master/images/Figure_1.png)
 
-To plot concentration for an individual specie, we added function `plot_specie`, which will take an integer as parameter to specify which specie to plot. 
+To plot concentration for an individual specie, we added function `plot_specie`, which will take a species as parameter to specify which specie to plot. 
 
-```
-sim.plot_specie(4)
+```python
+simulation.plot_specie(H2O)
 ```
 
 ![plot_specie](https://github.com/CS207Team10/cs207-FinalProject/blob/master/images/Figure_2.png)
 
 We also added a function `plot_reaction_all` to plot (reaction quotients - equilibrium constants)/ equilibrium constants.
 
-```
-sim.plot_reaction_all()
+```python
+simulation.plot_reaction_all()
 ```
 
 ![plot_reaction_all](https://github.com/CS207Team10/cs207-FinalProject/blob/master/images/Figure3.png)
 
-### Web
+### Web Visualization (Interactive)
 
-We've also implemented a visualization web front-end. 
-Check out the demo [here](https://giphy.com/gifs/l3mZ5WJKdimnC1zqM/fullscreen)
+(Updated: Website now deployed on AWS elastic beanstalk) 
+
+We've also implemented a web visualization. With the help of javascript, the trend of how reactions/species change during simulation is much more straightforward. In addition, it also shows the detailed information about each reaction/species. It still has some bugs as the `odeint` library are inconsistent with same parameters. To access the visualization of current simulation, simply run
+```python
+simulation.visualize()
+```
+
+~~Check out the demo [here]~~ ~~(https://giphy.com/gifs/l3mZ5WJKdimnC1zqM/fullscreen)~~
 
 
 
